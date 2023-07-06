@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { IoCloseSharp } from 'react-icons/io5'
 import { RiMenuLine } from 'react-icons/ri'
-import { FaFilter } from 'react-icons/fa6'
+import { FaSliders } from 'react-icons/fa6'
 
 const MenuTop = () => {
 	const [navbar, setNavbar] = useState(false)
@@ -23,13 +23,13 @@ const MenuTop = () => {
 						</button>
 					</div>
 					<div className='flex items-center'>
-						<Link to={'/inicio'}>
+						<Link to={'/'}>
 							<h1>BuddyUp</h1>
 						</Link>
 					</div>
 					<div className='md:hidden'>
 						<button className='text-2xl'>
-							<FaFilter />
+							<FaSliders />
 						</button>
 					</div>
 				</div>
