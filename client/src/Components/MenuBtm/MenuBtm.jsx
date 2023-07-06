@@ -1,5 +1,4 @@
 import { NavLink } from 'react-router-dom'
-AiOutlineStar
 import { AiOutlineStar } from 'react-icons/ai'
 import { BsChatDots } from 'react-icons/bs'
 import { RxPerson } from 'react-icons/rx'
