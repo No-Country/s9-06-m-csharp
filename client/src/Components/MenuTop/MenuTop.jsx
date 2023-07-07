@@ -14,7 +14,7 @@ const MenuTop = () => {
 	}
 
 	return (
-		<nav className='sticky h-16 w-full top-0 left-0 z-40 bg-white text-secundario'>
+		<nav className='sticky h-16 w-full top-0 left-0 z-40 bg-white'>
 			<div className='justify-between mx-auto lg:max-w-7xl md:items-center md:flex md:pr-8'>
 				<div className='flex items-center justify-between px-4 py-3 md:flex-row md:px-8'>
 					<div className='md:hidden'>
@@ -23,9 +23,9 @@ const MenuTop = () => {
 						</button>
 					</div>
 					<div className='flex items-center'>
-						<Link to={'/'}>
+						<NavLink to={'/'}>
 							<h1>BuddyUp</h1>
-						</Link>
+						</NavLink>
 					</div>
 					<div className='md:hidden'>
 						<button className='text-2xl'>
