@@ -8,7 +8,7 @@ function App() {
 
 	return (
 		<Routes>
-			<Route path="/" element={user ? <Swipe /> : <Login />} />
+			<Route path="/" element={<Swipe/> } />
 			<Route path="/login" element={user ? <Swipe /> : <Login />} />
 			<Route path="/register" element={user ? <Swipe /> : <Register />} />
 			<Route path="*" element={<Navigate replace={true} to="/" />} />
