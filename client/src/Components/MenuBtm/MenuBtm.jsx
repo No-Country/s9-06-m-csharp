@@ -5,7 +5,7 @@ import { RxPerson } from 'react-icons/rx'
 import { MdShare } from 'react-icons/md'
 const MenuBtm = () => {
 	return (
-		<nav className='bg-gray-950 fixed z-50 flex justify-between w-11/12 mb-5 rounded-3xl bottom-0 lg:hidden'>
+		<nav className='bg-gray-950  z-50 flex justify-center w-100  mb-5 mx-1 rounded-3xl bottom-0 lg:hidden'>
 			<NavLink to='/'>
 				<button className='group flex flex-col items-center justify-center w-16 h-16'>
 					<MdShare className='text-white text-2xl' />
@@ -16,7 +16,7 @@ const MenuBtm = () => {
 					<AiOutlineStar className='text-white text-2xl' />
 				</button>
 			</NavLink>
-			<NavLink to='/'>
+			<NavLink to='/chat'>
 				<button className='group flex flex-col items-center justify-center w-16 h-16'>
 					<BsChatDots className='text-white text-2xl' />
 				</button>
