@@ -20,7 +20,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-options.UseSqlServer(builder.Configuration["SqlServer:ConnectionString"]));
+    //options.UseSqlServer(builder.Configuration["SqlServer:ConnectionString"]
+    options.UseNpgsql(builder.Configuration["PostgreSql:ConnectionString"]
+    ));
 
 builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("JWT"));
 
