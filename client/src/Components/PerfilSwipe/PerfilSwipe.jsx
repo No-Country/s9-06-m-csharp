@@ -1,10 +1,5 @@
 import React from 'react'
-import {
-	FaMapMarkerAlt,
-	FaQuoteRight,
-	FaMars,
-	FaBirthdayCake,
-} from 'react-icons/fa'
+import { FaMapMarkerAlt, FaQuoteRight, FaMars, FaBirthdayCake} from 'react-icons/fa'
 import Tag from '../Tag/Tag.jsx'
 
 const PerfilSwipe = () => {
