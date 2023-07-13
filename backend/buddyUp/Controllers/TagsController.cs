@@ -39,11 +39,15 @@ namespace buddy_up.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Profile>> Post([FromBody] Tag tag)
+        public async Task<ActionResult<Profile>> Post([FromBody] TagDto tag)
         {
-            _tagRepository.Create(tag);
-
-            return CreatedAtAction(nameof(Get), new { id = tag.Id }, tag);
+            var theTag = new Tag()
+            {
+                name = tag.name
+            };
+            _tagRepository.Create(theTag);
+           
+            return CreatedAtAction("The tag was added successfully" ,theTag);
         }
         [HttpPut("{id}")]
         public ActionResult Put(int id, [FromBody] Tag tag)

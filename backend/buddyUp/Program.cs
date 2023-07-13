@@ -85,7 +85,7 @@ builder.Services.AddScoped<ITagRepository, TagRepository>();
 //        options.ClaimsIdentity.UserIdClaimType = ClaimTypes.Email;
 //        options.ClaimsIdentity.UserIdClaimType = "Id";
 //    });
-
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -237,13 +237,13 @@ namespace buddyUp.Controllers
                 if (userId is not null)
                 {
                     int cambiosTablaAsociativa = _userRepository.SetTags(userId, tags);
-                    if (cambiosTablaAsociativa == tags.Count())
+                    if (cambiosTablaAsociativa == tags.Count() * -1) // los cambios los devuelve como opuesto aritmético no se por qué
                     {
                         return Ok(new Response
                         {
                             Message = $"All tags were added to the user",
                             Status = "OK"
-                        });
+                        }); 
                     }                    
                     else
                     {

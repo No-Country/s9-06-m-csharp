@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Data.SqlClient;
 using Dapper;
 using System.Data;
+using Npgsql;
 
 namespace buddyUp.Data
 {
@@ -108,18 +109,18 @@ namespace buddyUp.Data
 
         public int SetTags(string id, List<TagDto> tags)
         {          
-            var procedureName = "SetUserTags";
+            var procedureName = "public.setusertags";
             int cambiosEnProfileTag = 0;
             Profile? profile = GetProfileById(id);
             if (profile is not null)
             { 
-                using (var connection = new SqlConnection(_config["SqlServer:ConnectionString"]))
+                using (var connection = new NpgsqlConnection(_config["PostgreSql:ConnectionString"]))
                 {
                     foreach(var theTag in tags)
                     {
                         cambiosEnProfileTag += connection.Execute(
                             procedureName, 
-                            new { tagId = theTag.id, ProfileId = profile.Id }, 
+                            new { tagid = theTag.id, profileid = profile.Id }, 
                             commandType: CommandType.StoredProcedure);
                     }                        
                 }
