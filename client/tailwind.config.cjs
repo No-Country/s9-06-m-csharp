@@ -13,6 +13,13 @@ module.exports = {
 				error: '#EA6C56',
 				true: '#63EE71',
 			},
+			inset: {
+				'1/2': '50%',
+				'full': '100%',
+			  },
+			  spacing: {
+				'64': '17rem',
+			  },
 		},
 	},
 
