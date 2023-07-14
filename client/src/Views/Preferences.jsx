@@ -1,25 +1,12 @@
 import React, { useState } from "react";
 import {
-  Typography,
-  TextField,
-  Button,
   Stepper,
   Step,
   StepLabel,
-  Radio,
-  RadioGroup,
-  FormControlLabel,
-  FormControl,
-  InputLabel,
-  Checkbox,
-  FormLabel,
-  FormGroup,
-  Box
 } from "@mui/material";
 import { styled } from '@mui/material/styles';
 import { alpha } from '@mui/system';
 import Slider, { sliderClasses } from '@mui/base/Slider';
-import TextareaAutosize from '@mui/base/TextareaAutosize';
 import { BsCheck2 } from 'react-icons/bs';
 import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector';
 import {
@@ -67,7 +54,6 @@ const Preferences = () => {
   const [files, setFiles] = useState([]);
   const [images, setImages] = useState([]);
 
-
   const steps = getSteps();
 
   const captureInputs = (e) => {
@@ -88,12 +74,6 @@ const Preferences = () => {
       }));
     }
   }
-  // const FormSubmit = () => {
-  //   alert("Enviado con exito!!!");
-  //   console.log(data);
-  // }
-
-
 
   // const handleImageChange = (filesReceived) => {
   //   const [...uploadedFiles] = filesReceived
@@ -193,10 +173,6 @@ const Preferences = () => {
     });
   }
 
-  // function handleSaveImage() {
-  //   console.log(files);
-  // }
-
   function deleteFile(id) {
     const imageIndex = images.findIndex(item => item.id === id);
 
@@ -205,10 +181,6 @@ const Preferences = () => {
       setFiles(files.filter((_, i) => i !== imageIndex));
     }
   }
-
-  // const onSubmit = (data) => {
-  //   console.log(data);
-  // };
 
   const QontoConnector = styled(StepConnector)(({ theme }) => ({
     [`&.${stepConnectorClasses.alternativeLabel}`]: {
