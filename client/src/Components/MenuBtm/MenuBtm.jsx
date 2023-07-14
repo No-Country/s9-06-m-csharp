@@ -6,7 +6,7 @@ import { MdShare } from 'react-icons/md'
 
 const MenuBtm = () => {
 	return (
-		<nav className='bg-gray-950 flex justify-between w-11/12 mb-5 rounded-3xl bottom-0 lg:hidden'>
+		<nav className='bg-gray-950 flex justify-between w-11/12 rounded-3xl mt-auto mb-1 bottom-0 lg:hidden'>
 			<NavLink to='/'>
 				<button className='group flex flex-col items-center justify-center w-16 h-16'>
 					<MdShare className='text-white text-2xl' />
