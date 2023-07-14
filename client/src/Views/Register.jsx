@@ -23,20 +23,20 @@ const Register = () => {
               <label className="font-semibold text-sm text-gray-600 pb-1 block">Nombre completo</label>
               <input
                 onChange={(e) => updateRegisterInfo({ ...registerInfo, name: e.target.value })}
-                type="text" placeholder="Naruto Uzumaki" className="border rounded-lg px-3 py-2 mt-1 mb-5 text-neutral-950 text-sm w-full" />
+                type="text" placeholder="Nombres y Apellidos" className="border rounded-lg px-3 py-2 mt-1 mb-5 text-neutral-950 text-sm w-full" />
               <label className="font-semibold text-sm text-gray-600 pb-1 block">Correo electrónico</label>
               <input
                 onChange={(e) => updateRegisterInfo({ ...registerInfo, email: e.target.value })}
-                type="email" placeholder="naruto@gmail.com" className="border rounded-lg px-3 py-2 mt-1 mb-5 text-neutral-950 text-sm w-full" />
+                type="email" placeholder="Ejemplo@gmail.com" className="border rounded-lg px-3 py-2 mt-1 mb-5 text-neutral-950 text-sm w-full" />
               <label className="font-semibold text-sm text-gray-600 pb-1 block">Contraseña</label>
               <input
                 onChange={(e) => updateRegisterInfo({ ...registerInfo, password: e.target.value })}
                 type="password" className="border rounded-lg px-3 py-2 mt-1 mb-5 text-neutral-950 text-sm w-full" />
-              <button type="submit" className="transition duration-200 bg-blue-500 hover:bg-blue-600 focus:bg-blue-700 focus:shadow-sm focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50 text-white w-full py-2.5 rounded-lg text-sm shadow-sm hover:shadow-md font-semibold text-center inline-block">
+              <button type="submit" className="transition duration-200 bg-accent2 text-black w-full py-2.5 rounded-lg text-sm shadow-sm hover:shadow-md font-semibold text-center inline-block">
                 {
                   isRegisterLoading ?
-                    <span className="inline-block mr-2">Creating your account</span>
-                    : <span className="inline-block mr-2">Continuar</span>
+                    <span className="inline-block">Creating your account</span>
+                    : <span className="inline-block">Continuar</span>
                 }
               </button>
               {
