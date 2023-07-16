@@ -14,6 +14,7 @@ namespace buddyUp.Data
         public virtual DbSet<Tag> Tag { get; set; }
         public virtual DbSet<Profile> Profile { get; set; }
         public virtual DbSet<Photo> Photo { get; set; }
+        public virtual DbSet<Match> Match { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -23,6 +24,7 @@ namespace buddyUp.Data
             builder.Entity<Tag>().Property(t => t.Id).ValueGeneratedOnAdd();
             builder.Entity<Profile>().Property(p => p.Id).ValueGeneratedOnAdd();
             builder.Entity<Photo>().Property(p => p.Id).ValueGeneratedOnAdd();
+            builder.Entity<Match>().Property(m => m.id).ValueGeneratedOnAdd();
 
             //builder.Entity<Profile>().HasIndex(p => p.UserId).IsUnique();
         }

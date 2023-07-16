@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using buddyUp.Data;
@@ -11,9 +12,10 @@ using buddyUp.Data;
 namespace buddyUp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230714003433_matchfunction1")]
+    partial class matchfunction1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,32 +23,6 @@ namespace buddyUp.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("buddyUp.Models.Match", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
-
-                    b.Property<bool>("isMatch")
-                        .HasColumnType("boolean");
-
-                    b.Property<int>("userp1_id")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("userp2_id")
-                        .HasColumnType("integer");
-
-                    b.HasKey("id");
-
-                    b.HasIndex("userp1_id");
-
-                    b.HasIndex("userp2_id");
-
-                    b.ToTable("Match");
-                });
 
             modelBuilder.Entity("buddyUp.Models.Photo", b =>
                 {
@@ -351,25 +327,6 @@ namespace buddyUp.Migrations
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
                     b.HasDiscriminator().HasValue("ApplicationUser");
-                });
-
-            modelBuilder.Entity("buddyUp.Models.Match", b =>
-                {
-                    b.HasOne("buddyUp.Models.Profile", "user1")
-                        .WithMany()
-                        .HasForeignKey("userp1_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("buddyUp.Models.Profile", "user2")
-                        .WithMany()
-                        .HasForeignKey("userp2_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("user1");
-
-                    b.Navigation("user2");
                 });
 
             modelBuilder.Entity("buddyUp.Models.Photo", b =>

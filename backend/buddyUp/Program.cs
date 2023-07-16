@@ -75,6 +75,7 @@ options.SignIn.RequireConfirmedEmail = false)
 
 builder.Services.AddScoped<IUserProfileRepository, UserProfileRepository>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
+builder.Services.AddScoped<IMatchRepository, MatchRepository>();
 //builder.Services.AddScoped<IProfileRespository, ProfileRespository>();
 // puede ser pa?! puede ser?!
 //builder.Services.Configure<IdentityOptions>(
