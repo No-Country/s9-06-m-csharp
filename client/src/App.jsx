@@ -9,6 +9,7 @@ function App() {
 
 	return (
 		<Routes>
+				<Route path="/Swipe" element={<Swipe /> } />
 			<Route path="/" element={user ? <Swipe /> : <Login />} />
 			<Route path="/login" element={user ? <Swipe /> : <Login />} />
 			<Route path="/chat" element={user ? <Chat/> : <Login />} />
