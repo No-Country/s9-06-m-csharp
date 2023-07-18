@@ -3,3 +3,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  /* Style for slider track */
+  input[type=range]::-webkit-slider-runnable-track {
+    background: #be9cfa8e;
+    border-radius: 5px;
+  }
+}
