@@ -77,7 +77,7 @@ const Preferences = () => {
     genero: "",
     preferences: [],
     detailPreferences: "",
-    distancePreference: ""
+    distancePreference: "50"
   });
   const [position, setPosition] = useState({
     latitude: 0,
@@ -269,9 +269,9 @@ const Preferences = () => {
       <div className="absolute top-0 left-[100%] -translate-x-[100%] w-[167px] xl:w-[400px]">
         <img src={ellipse2} alt="" />
       </div>
-      <div className="h-12 px-4 py-2 mb-10 flex justify-start items-center">
-        {activeStep !== 0
-          ? <MdOutlineArrowBackIos onClick={handleBack} style={{ width: "32px", height: "32px" }} />
+      <div className="h-12 px-4 py-2 xl:py-4 xl:h-14 mb-10 flex justify-start items-center">
+        {activeStep !== 0 && activeStep !== 8
+          ? <MdOutlineArrowBackIos onClick={handleBack} style={{ width: "32px", height: "32px", position: "absolute", zIndex: "9" }} />
           : null
         }
       </div>
@@ -329,7 +329,7 @@ const Preferences = () => {
                 {
                   activeStep == 0 &&
                   (<>
-                    <h2 className="font-nunito text-2xl text-black font-bold xl:text-3xl">¿Cómo es tu nombre?</h2>
+                    <h2 className="font-nunito text-2xl text-black font-bold xl:text-3xl z-10">¿Cómo es tu nombre?</h2>
                     <p className="w-[358px] xl:w-[408px] font-nunitosans font-semibold text-sm text-black my-4 xl:mt-[18px] xl:mb-6 text-center xl:text-base">Asi es como se va a ver en tu perfil, pero recuerda que<br /> no podrás cambiarlo más adelante. ¡Eligesa biamente! 😉</p>
                     <div className="mb-[455px] xl:mb-[433px]">
                       <input
@@ -348,9 +348,9 @@ const Preferences = () => {
                 {
                   activeStep == 1 &&
                   (<>
-                    <h2 className="font-nunito text-2xl text-black font-bold xl:text-3xl">¿Cuándo es tu cumpleaños?</h2>
+                    <h2 className="font-nunito text-2xl text-black font-bold xl:text-3xl z-10">¿Cuándo es tu cumpleaños?</h2>
                     <p className="font-nunitosans text-sm text-black my-4 text-start xl:mt-[18px] xl:mb-6 xl:text-base">Tus posibles amigos solo verán tu edad, no tu fecha de nacimiento.</p>
-                    <div className="flex flex-col justify-center mb-[459px] xl:mb-[437px]">
+                    <div className="w-full flex flex-col justify-center mb-[459px] xl:mb-[437px]">
                       <input
                         {...register("date", { required: true })}
                         type="date"
@@ -359,14 +359,14 @@ const Preferences = () => {
                         value={data.date}
                         className="w-[193px] h-10 px-4 py-2 mx-auto text-base rounded-2xl text-2xl"
                       />
-                      {errors.date?.type === "required" && <p className="mt-2 p-3 rounded-xl font-bold text-sm bg-red-100 text-error">La fecha de nacimiento es obligatoria</p>}
+                      {errors.date?.type === "required" && <p className="w-full mt-2 p-3 rounded-xl font-bold text-sm bg-red-100 text-error">La fecha de nacimiento es obligatoria</p>}
                     </div>
                   </>)
                 }
                 {
                   activeStep == 2 &&
                   (<>
-                    <h2 className="font-nunito font-bold text-2xl mb-4 xl:text-3xl xl:w-[449px]">¿Con que género te indentificas?</h2>
+                    <h2 className="font-nunito font-bold text-2xl mb-4 xl:text-3xl xl:w-[449px] z-10">¿Con que género te indentificas?</h2>
                     <div className="flex flex-col justify-between xl:mt-6 mb-[412px] xl:mb-[426px] xl:w-[408px]">
                       <div className="flex gap-4">
                         <div className="cursor-pointer flex flex-col items-center gap-2 rounded-2xl border border-solid border-[#c6c6c6] p-4 w-[108px]">
@@ -391,13 +391,13 @@ const Preferences = () => {
                           </label>
                         </div>
                       </div>
-                      {errors.genero?.type === "required" && <p className="mt-2 p-3 rounded-xl font-bold text-sm bg-red-100 text-error">El género es obligatorio</p>}
+                      {errors.genero?.type === "required" && <p className="w-full mt-2 p-3 rounded-xl font-bold text-sm bg-red-100 text-error">El género es obligatorio</p>}
                     </div>
                   </>)
                 }
                 {activeStep == 3 &&
                   (<div className="flex flex-col items-start h-full">
-                    <h2 className="font-nunito font-bold text-2xl xl:text-3xl xl:text-start">Añade tus fotos</h2>
+                    <h2 className="font-nunito font-bold text-2xl xl:text-3xl xl:text-start z-10">Añade tus fotos</h2>
                     <p className="font-nunitosans text-sm text-black my-4 xl:mt-[18px] xl:mb-6 xl:text-base">¡Ponle cara a tu perfil! Agrega una foto y haz que nuevos amigos te reconozcan al instante.</p>
                     <div className="mb-[203px] xl:mb-[124px] h-[264px]">
                       <div className="flex flex-wrap gap-3">
@@ -436,13 +436,13 @@ const Preferences = () => {
                           </div>
                         ))}
                       </div>
-                      {errors.images?.type === "required" && <p className="mt-2 p-3 rounded-xl font-bold text-sm bg-red-100 text-error">Debes subir al menos una imagen.</p>}
+                      {errors.images?.type === "required" && <p className="w-full mt-2 p-3 rounded-xl font-bold text-sm bg-red-100 text-error">Debes subir al menos una imagen.</p>}
                     </div>
                   </div>)
                 }
                 {activeStep == 4 &&
                   (<div className="relative">
-                    <h2 className="font-nunito font-bold text-2xl xl:text-3xl">Tus pasatiempos</h2>
+                    <h2 className="font-nunito font-bold text-2xl xl:text-3xl z-10">Tus pasatiempos</h2>
                     <p className="font-nunitosans text-sm text-black my-4 xl:mt-[18px] xl:mb-6 xl:text-base">Selecciona tu favorito para encontrar amigos con intereses similares.</p>
                     <div className="flex flex-wrap gap-4 my-4 xl:w-[545px] xl:mt-[13px] xl:mb-[18px] mx-auto">
                       {categories?.map(category => (
@@ -462,7 +462,7 @@ const Preferences = () => {
                         </div>
                       ))}
                     </div>
-                    <h2 className="font-nunito font-bold text-2xl">Otros intereses</h2>
+                    <h2 className="font-nunito font-bold text-2xl z-10">Otros intereses</h2>
                     <div className="xl:mb-[78px]">
                       <div className="flex flex-wrap gap-4 my-4 xl:w-[586px]">
                         {otherCategories?.map(category => (
@@ -482,7 +482,7 @@ const Preferences = () => {
                           </div>
                         ))}
                       </div>
-                      {errors.preferences?.type === "required" && <p className="mt-2 p-3 rounded-xl font-bold text-sm bg-red-100 text-error">Las categorias son obligatorias.</p>}
+                      {errors.preferences?.type === "required" && <p className="w-full mt-2 p-3 rounded-xl font-bold text-sm bg-red-100 text-error">Las categorias son obligatorias.</p>}
                     </div>
                   </div>)
                 }
@@ -490,7 +490,7 @@ const Preferences = () => {
                   activeStep == 5 &&
                   (<>
                     <div className="w-full flex justify-start">
-                      <h2 className="text-2xl text-black font-bold mb-4 xl:text-3xl">¡Nos encanta el<br /> interés que elegiste!</h2>
+                      <h2 className="text-2xl text-black font-bold mb-4 xl:text-3xl z-10">¡Nos encanta el<br /> interés que elegiste!</h2>
                     </div>
                     <div className="w-full mb-[391px] xl:mb-[332px] xl:mt-4">
                       <textarea style={{ resize: "none" }} {...register("detailPreferences", { required: true })}
@@ -517,7 +517,7 @@ const Preferences = () => {
                 {
                   activeStep == 7 &&
                   (<>
-                    <h2 className="font-nunito font-bold text-2xl mb-4 text-center xl:text-3xl">¿Tus preferencias de<br /> distancia?</h2>
+                    <h2 className="font-nunito font-bold text-2xl mb-4 text-center xl:text-3xl z-10">¿Tus preferencias de<br /> distancia?</h2>
                     <p className="mb-[59px] text-sm xl:text-base">De esta manera, podremos conectarte con personas que compartan tu misma pasión y vivan cerca de ti.</p>
                     <div className="w-full text-accent1 mb-[309px] xl:mb-[312px]">
                       <input
@@ -541,7 +541,7 @@ const Preferences = () => {
                         <option className="p-0" value="50" label="50 km"></option>
                       </datalist>
                     </div>
-                    {errors.detailPreferences?.type === "required" && <p className="mt-2 p-3 rounded-xl font-bold text-sm bg-red-100 text-error">La distancia es obligatoria</p>}
+                    {errors.distancePreference?.type === "required" && <p className="w-full mt-2 p-3 rounded-xl font-bold text-sm bg-red-100 text-error">La distancia es obligatoria</p>}
                   </>)
                 }
                 {/* <div className="w-full min-h-full p-4 inline-block"> */}
