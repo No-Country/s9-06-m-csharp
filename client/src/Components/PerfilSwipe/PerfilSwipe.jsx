@@ -1,6 +1,12 @@
 import React from 'react'
-import { FaMapMarkerAlt, FaQuoteRight, FaMars, FaBirthdayCake} from 'react-icons/fa'
+import {
+	FaMapMarkerAlt,
+	FaQuoteRight,
+	FaMars,
+	FaBirthdayCake,
+} from 'react-icons/fa'
 import Tag from '../Tag/Tag.jsx'
+import MatchButtons from '../MatchButtons/MatchButtons.jsx'
 
 const PerfilSwipe = () => {
 	const tagsArriba = [
@@ -91,6 +97,14 @@ const PerfilSwipe = () => {
 						<Tag key={index} text={interes} />
 					))}
 				</div>
+			</div>
+			{/* Mostrar solo en dispositivos móviles */}
+			<div className='mt-1 flex flex-col items-center justify-center sticky bottom-20 bg-white md:hidden'>
+				<MatchButtons />
+			</div>
+			{/* Mostrar solo en desktop */}
+			<div className='sticky bottom-3 bg-white hidden md:block'>
+				<MatchButtons />
 			</div>
 		</>
 	)
