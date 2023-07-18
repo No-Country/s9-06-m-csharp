@@ -13,7 +13,8 @@ function App() {
 			<Route path="/login" element={user ? <Swipe /> : <Login />} />
 			<Route path="/chat" element={user ? <Chat /> : <Login />} />
 			<Route path="/register" element={user ? <Swipe /> : <Register />} />
-			<Route path="/preferences" element={user ? <Swipe /> : <Preferences />} />
+			<Route path="/preferences" element={user ? <Preferences /> : <Login />} />
+			<Route path="/swipe" element={user ? <Swipe /> : <Login />} />
 			<Route path="*" element={<Navigate replace={true} to="/" />} />
 		</Routes>
 	)
