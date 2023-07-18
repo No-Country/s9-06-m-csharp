@@ -1,6 +1,7 @@
 ﻿
 
 using buddyUp.Models;
+using Microsoft.SqlServer.Types;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
@@ -8,7 +9,7 @@ using System.Text.Json.Serialization;
 namespace buddyUp.Models
 {
     public class Profile
-    {       
+    {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         public int Id { get; set; }
@@ -28,10 +29,12 @@ namespace buddyUp.Models
         //public List<Tag> tags { get; set; } = new();
         [JsonIgnore]
         public List<Photo> photos { get; set; } = new(); // alojada en otra db?
-        //public List<ApplicationUser> liked_user_of { get; } = new();
-        //public List<ApplicationUser> liked_users { get; } = new();
-        //public List<ApplicationUser> matched_users { get; } = new();
-        //public string locatoin { get; set; } = string.Empty;
-       
+        public string aprox_location { get; set; } = string.Empty;
+        public int minimun_age { get; set; }
+        public int maximun_age { get; set; }
+        public int minimun_distance { get; set; }
+        public int maximun_distance { get; set; }
+        public double longitude { get; set; }
+        public double latitude { get; set; }
     }
 }
