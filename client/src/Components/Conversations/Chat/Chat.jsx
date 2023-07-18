@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import img from '../../images/imageTest.jpg'
+import img from '../../../images/imageTest.jpg'
 import { VscSend } from 'react-icons/vsc'
 const Chat = () => {
 	const [message, setMessage] = useState('')
