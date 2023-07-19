@@ -3,6 +3,7 @@ using buddyUp.Helpers;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.EntityFrameworkCore;
@@ -48,26 +49,12 @@ builder.Services.AddAuthentication(options =>
         ValidateLifetime = true
     };
 });
-//builder.Services.AddAuthentication(options =>
-//{
-//    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-//}).AddCookie(
-////    options =>
-////{
-////    options.LoginPath = "/api/auth/google-login";
-////}
-//).AddGoogle(googleOptions =>
-//{
-//    googleOptions.ClientId = builder.Configuration["Google:ClientId"];
-//    googleOptions.ClientSecret = builder.Configuration["Google:ClientSecret"];
-//});
-//    .AddFacebook(facebookOptions =>
-//{
-//    facebookOptions.ClientId = builder.Configuration["Facebook:ClientId"];
-//    facebookOptions.AppSecret = builder.Configuration["Facebook:ClientSecret"];
-//    facebookOptions.AccessDeniedPath = "/AccessDeniedPathInfo";
-//})
 
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders =
+        ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+});
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 options.SignIn.RequireConfirmedEmail = false)
@@ -89,14 +76,23 @@ builder.Services.AddScoped<IMatchRepository, MatchRepository>();
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 var app = builder.Build();
 
+app.UseForwardedHeaders();//cuidado
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+else
+{
+    app.UseHsts();
+}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 
 app.UseAuthentication();
 app.UseAuthorization();

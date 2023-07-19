@@ -1,22 +1,20 @@
-# Adjust DOTNET_OS_VERSION as desired
-ARG DOTNET_OS_VERSION="-alpine"
-ARG DOTNET_SDK_VERSION=6.0
-
-FROM mcr.microsoft.com/dotnet/sdk:${DOTNET_SDK_VERSION}${DOTNET_OS_VERSION} AS build
-WORKDIR /src
-
-# copy everything
-COPY . ./
-# restore as distinct layers
-RUN dotnet restore
-# build and publish a release
-RUN dotnet publish -c Release -o /app
-
-# final stage/image
-FROM mcr.microsoft.com/dotnet/aspnet:${DOTNET_SDK_VERSION}
-ENV ASPNETCORE_URLS http://+:8080
-ENV ASPNETCORE_ENVIRONMENT Production
-EXPOSE 8080
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 as base
 WORKDIR /app
-COPY --from=build /app .
-ENTRYPOINT [ "dotnet", "buddyUp - Backup.dll" ]
+EXPOSE 80
+EXPOSE 443
+
+FROM mcr.microsoft.com/dotnet/sdk:6.0 as build
+WORKDIR /src
+COPY ["buddyUp.csproj", "."]
+RUN dotnet restore "./buddyUp.csproj"
+COPY . . 
+WORKDIR "/src/."
+RUN dotnet build "buddyUp.csproj" -c Release -o /app/build
+
+FROM build as publish
+RUN dotnet publish "buddyUp.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+FROM base as final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "buddyUp.dll"]
