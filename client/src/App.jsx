@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
-import { Login, Register, Swipe } from './Views'
-import Chat from './Components/Chat/Chat';
+import { Home, Login, Register, Preferences, Swipe } from './Views'
+// import Chat from './Components/Chat/Chat';
+import Conversations from './Components/Chat/conversations/conversations';
 import { useContext } from "react";
 import { AuthContext } from "./Context/AuthContext";
 
@@ -9,10 +10,12 @@ function App() {
 
 	return (
 		<Routes>
-			<Route path="/" element={user ? <Swipe /> : <Login />} />
+			<Route path="/" element={<Home />} />
 			<Route path="/login" element={user ? <Swipe /> : <Login />} />
-			<Route path="/chat" element={user ? <Chat/> : <Login />} />
+			<Route path="/conversations" element={user ? <Conversations /> : <Login />} />
 			<Route path="/register" element={user ? <Swipe /> : <Register />} />
+			<Route path="/preferences" element={user ? <Preferences /> : <Login />} />
+			<Route path="/swipe" element={user ? <Swipe /> : <Login />} />
 			<Route path="*" element={<Navigate replace={true} to="/" />} />
 		</Routes>
 	)

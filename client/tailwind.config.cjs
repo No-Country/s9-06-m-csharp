@@ -16,10 +16,15 @@ module.exports = {
 			inset: {
 				'1/2': '50%',
 				'full': '100%',
-			  },
-			  spacing: {
+			},
+			spacing: {
 				'64': '17rem',
-			  },
+			},
+			fontFamily: {
+				nunito: ['Nunito', 'sans-serif'],
+				nunitosans: ['Nunito Sans', 'sans-serif'],
+				opensans: ["Open Sans", "sans-serif"],
+			},
 		},
 	},
 
