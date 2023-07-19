@@ -1,5 +1,6 @@
 import { createContext, useCallback, useEffect, useState } from "react";
 // import { baseUrl, postRequest } from "../Utils/services";
+import { useNavigate } from "react-router";
 
 export const AuthContext = createContext();
 
@@ -18,6 +19,7 @@ export const AuthContextProvider = ({ children }) => {
     email: "",
     password: ""
   });
+  const navigate = useNavigate();
 
   useEffect(() => {
     const user = localStorage.getItem("User");
@@ -50,6 +52,7 @@ export const AuthContextProvider = ({ children }) => {
     localStorage.setItem("User", JSON.stringify(registerInfo));
     setUser(registerInfo);
     console.log(registerInfo);
+    navigate("/preferences");
   }, [registerInfo]);
 
   const loginUser = useCallback(async (e) => {

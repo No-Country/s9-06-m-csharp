@@ -1,25 +1,12 @@
 import React, { useState } from "react";
 import {
-  Typography,
-  TextField,
-  Button,
   Stepper,
   Step,
   StepLabel,
-  Radio,
-  RadioGroup,
-  FormControlLabel,
-  FormControl,
-  InputLabel,
-  Checkbox,
-  FormLabel,
-  FormGroup,
-  Box
 } from "@mui/material";
 import { styled } from '@mui/material/styles';
 import { alpha } from '@mui/system';
 import Slider, { sliderClasses } from '@mui/base/Slider';
-import TextareaAutosize from '@mui/base/TextareaAutosize';
 import { BsCheck2 } from 'react-icons/bs';
 import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector';
 import {
@@ -29,14 +16,44 @@ import {
   useFormContext,
 } from "react-hook-form";
 import { MdOutlineArrowBackIos } from "react-icons/md";
+import { HiOutlinePlus } from "react-icons/hi";
+import { VscChromeClose } from "react-icons/vsc";
 import { v4 as uuidv4 } from 'uuid';
+import female from "../images/female.svg";
+import male from "../images/male.svg";
+import other from "../images/other.svg";
+import categoryDeporte from "../images/category-deportes.png";
+import categoryCocina from "../images/category-cocina.png";
+import categoryIdiomas from "../images/category-idiomas.png";
+import categoryMusica from "../images/category-musica.png";
+import categoryOtros from "../images/category-otros.png";
+import ubication from "../images/ubication.png";
+import finalStep from "../images/final-step.png";
+import ellipse1 from "../images/ellipse-1.png";
+import ellipse2 from "../images/ellipse-2.png";
+import ellipse3 from "../images/ellipse-3.png";
+import { useNavigate } from "react-router";
 
-const items = [
+const categories = [
+  { id: "deporte", src: `${categoryDeporte}` },
+  { id: "cocina", src: `${categoryCocina}` },
+  { id: "musica", src: `${categoryIdiomas}` },
+  { id: "idioma", src: `${categoryMusica}` },
+  { id: "otro", src: `${categoryOtros}` },
+];
+
+const otherCategories = [
+  { id: "ciencia", label: "Ciencias" },
   { id: "deporte", label: "Deporte" },
-  { id: "cocina", label: "Cocina" },
-  { id: "musica", label: "Música" },
-  { id: "idioma", label: "Idioma" },
-  { id: "otro", label: "Otro" },
+  { id: "matematica", label: "Matemática" },
+  { id: "dieta", label: "Dieta" },
+  { id: "anime", label: "Anime" },
+  { id: "arte", label: "Arte" },
+  { id: "fotografia", label: "Fotografía" },
+  { id: "tecnologia", label: "Tecnología" },
+  { id: "excursiones", label: "Excursiones" },
+  { id: "cafe", label: "Café" },
+  { id: "comida_mexicana", label: "Comida Mexicana" },
 ];
 
 function getSteps() {
@@ -47,6 +64,7 @@ function getSteps() {
     "Pictures",
     "Preferences",
     "Detail Preferences",
+    "Ubication",
     "Distance Preference"
   ];
 }
@@ -61,12 +79,17 @@ const Preferences = () => {
     detailPreferences: "",
     distancePreference: "50"
   });
+  const [position, setPosition] = useState({
+    latitude: 0,
+    longitude: 0
+  });
   const [activeStep, setActiveStep] = useState(0);
   const [skippedSteps, setSkippedSteps] = useState([]);
 
   const [files, setFiles] = useState([]);
   const [images, setImages] = useState([]);
 
+  const navigate = useNavigate();
 
   const steps = getSteps();
 
@@ -88,39 +111,6 @@ const Preferences = () => {
       }));
     }
   }
-  // const FormSubmit = () => {
-  //   alert("Enviado con exito!!!");
-  //   console.log(data);
-  // }
-
-
-
-  // const handleImageChange = (filesReceived) => {
-  //   const [...uploadedFiles] = filesReceived
-  //   const filesUploaded = uploadedFiles.map((file) => {
-  //     const newFile = {
-  //       urlPreview: window.URL.createObjectURL(file),
-  //       name: file.name,
-  //       file
-  //     }
-
-  //     return newFile
-  //   })
-
-  //   const allFiles = [...data.images, ...filesUploaded]
-
-  //   if (allFiles.length > 6) return
-
-  //   const filesLimit = [...data.images, ...filesUploaded].splice(0, 6)
-
-  //   setImages(filesLimit)
-  // }
-
-  // const handleDeleteImage = (indexImage) => {
-  //   const newFiles = data.images.filter((_, index) => index !== indexImage)
-  //   setImages(newFiles);
-  // }
-
 
   // const isStepOptional = (step) => {
   //   return step === 1 || step === 2;
@@ -139,6 +129,17 @@ const Preferences = () => {
     console.log(data);
     console.log("files: ", files);
     console.log("images: ", images);
+    if (activeStep == 6) {
+      // si el navegador soporta geolocalizacion
+      if (navigator.geolocation) {
+        // pedimos los datos de geolocalizacion al navegador
+        navigator.geolocation.getCurrentPosition(
+          function (positionUser) {
+            setPosition({ latitude: positionUser.coords.latitude, longitude: positionUser.coords.longitude })
+          })
+      }
+    }
+    console.log(position);
     if (activeStep == steps.length - 1) {
       fetch("https://jsonplaceholder.typicode.com/comments")
         .then((data) => data.json())
@@ -193,10 +194,6 @@ const Preferences = () => {
     });
   }
 
-  // function handleSaveImage() {
-  //   console.log(files);
-  // }
-
   function deleteFile(id) {
     const imageIndex = images.findIndex(item => item.id === id);
 
@@ -205,10 +202,6 @@ const Preferences = () => {
       setFiles(files.filter((_, i) => i !== imageIndex));
     }
   }
-
-  // const onSubmit = (data) => {
-  //   console.log(data);
-  // };
 
   const QontoConnector = styled(StepConnector)(({ theme }) => ({
     [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -269,215 +262,289 @@ const Preferences = () => {
   }
 
   return (
-    <div className="min-h-screen relative bg-main_color">
-      <div className="h-12 px-4 py-2 mb-10 flex justify-start items-center">
-        {activeStep !== 0
-          ? <MdOutlineArrowBackIos onClick={handleBack} style={{ width: "32px", height: "32px" }} />
+    <div className="relative bg-main_color min-h-screen">
+      <div className="absolute top-0 left-0 w-[167px] xl:w-[350px]">
+        <img src={ellipse1} alt="" />
+      </div>
+      <div className="absolute top-0 left-[100%] -translate-x-[100%] w-[167px] xl:w-[400px]">
+        <img src={ellipse2} alt="" />
+      </div>
+      <div className="h-12 px-4 py-2 xl:py-4 xl:h-14 mb-10 flex justify-start items-center">
+        {activeStep !== 0 && activeStep !== 8
+          ? <MdOutlineArrowBackIos onClick={handleBack} style={{ width: "32px", height: "32px", position: "absolute", zIndex: "9" }} />
           : null
         }
       </div>
-      <Stepper alternativeLabel activeStep={activeStep}>
-        {steps.map((step, index) => {
-          const labelProps = {};
-          const stepProps = {};
-          // if (isStepOptional(index)) {
-          //   labelProps.optional = (
-          //     <Typography
-          //       variant="caption"
-          //       align="center"
-          //       style={{ display: "block" }}
-          //     >
-          //       optional
-          //     </Typography>
-          //   );
-          // }
-          if (isStepFalied() && activeStep == index) {
-            labelProps.error = true;
-          }
-          if (isStepSkipped(index)) {
-            stepProps.completed = false;
-          }
-          return (
-            <Step {...stepProps} key={index}>
-              <StepLabel StepIconComponent={QontoStepIcon} {...labelProps}></StepLabel>
-            </Step>
-          );
-        })}
-      </Stepper>
+      <div className="xl:w-[200px] xl:mx-auto">
+        <Stepper alternativeLabel activeStep={activeStep}>
+          {steps.map((step, index) => {
+            const labelProps = {};
+            const stepProps = {};
+            // if (isStepOptional(index)) {
+            //   labelProps.optional = (
+            //     <Typography
+            //       variant="caption"
+            //       align="center"
+            //       style={{ display: "block" }}
+            //     >
+            //       optional
+            //     </Typography>
+            //   );
+            // }
+            if (isStepFalied() && activeStep == index) {
+              labelProps.error = true;
+            }
+            if (isStepSkipped(index)) {
+              stepProps.completed = false;
+            }
+            return (
+              <Step {...stepProps} key={index}>
+                <StepLabel StepIconComponent={QontoStepIcon} {...labelProps}></StepLabel>
+              </Step>
+            );
+          })}
+        </Stepper>
+      </div>
 
       {activeStep === steps.length ? (
-        <div className="text-center">
-          Tus preferencias se agregaron correctamente
-        </div>
+        <>
+          <div className="h-screen flex flex-col items-center justify-center text-center mx-4 xl:w-[405px]  xl:mx-auto">
+            <img className="mx-auto" src={finalStep} alt="" />
+            <h2 className="font-nunito font-semibold text-4xl text-[#2f2f2f] mt-2 xl:text-3xl xl:px-10">Al final gana quien es más amable</h2>
+            <p className="font-nunitosans text-sm text-[#2f2f2f] mt-2 mb-8 xl:text-base xl:px-2">Estás a un paso de empezar a usar nuestra app BuddyUp, aquí encontrarás una comunidad amigable y enriquecedora, donde el respeto y la amabilidad son fundamentales. Aprende y crece junto a personas con intereses similares. ¡Conecta, aprende y crece con nosotros!</p>
+            <button
+              className="w-[358px] cursor-pointer transition duration-200 bg-accent2 text-black py-2.5 mx-auto mt-4 rounded-2xl text-sm shadow-sm hover:shadow-md text-center inline-block text-base font-bold h-12 text-[24px]"
+              type="button"
+              onClick={() => navigate("/swipe")}
+            >
+              Comenzar
+            </button>
+          </div>
+        </>
       ) : (
         <>
           <FormProvider {...methods}>
-            <form onSubmit={handleSubmit(handleNext)} className="px-4 py-8">
-              {
-                activeStep == 0 &&
-                (<>
-                  <h2 className="text-2xl text-black font-bold mb-4">¿Cómo es tu nombre?</h2>
-                  <p className="text-sm text-black my-4">Asi es como se va a ver en tu perfil, pero recuerda que no podrás cambiarlo más adelante. ¡Elige sabiamente! 😉</p>
-                  <input
-                    {...register("name", { required: true })}
-                    type="text"
-                    name="name"
-                    onChange={captureInputs}
-                    value={data.name}
-                    className="w-full py-2.5 px-4 border border-solid border-[#c6c6c6] rounded-2xl"
-                    placeholder="Ingresa tu nombre"
-                  />
-                  {errors.name?.type === "required" && <p className="mt-2 p-3 rounded-xl font-bold text-sm bg-red-100 text-error">El nombre es obligatorio</p>}
-                </>)
-              }
-              {
-                activeStep == 1 &&
-                (<>
-                  <h2 className="text-2xl text-black font-bold mb-4">¿Cuándo es tu cumpleaños?</h2>
-                  <p className="text-sm text-black my-4">Tus posibles amigos solo verán tu edad, no tu fecha de nacimiento.</p>
-                  <div className="flex justify-center">
-                    <input
-                      {...register("date", { required: true })}
-                      type="date"
-                      name="date"
-                      onChange={captureInputs}
-                      value={data.date}
-                      className="w-40 px-4 py-2 mx-auto text-base rounded-2xl"
-                    />
-                  </div>
-                  {errors.date?.type === "required" && <p className="mt-2 p-3 rounded-xl font-bold text-sm bg-red-100 text-error">La fecha de nacimiento es obligatoria</p>}
-                </>)
-              }
-              {
-                activeStep == 2 &&
-                (<>
-                  <h2 className="text-2xl mb-4">¿Con que género de indentificas?</h2>
-                  <div>
-                    <label htmlFor="femenino">
-                      <input type="radio" id="femenino" value="femenino" {...register("genero", { required: true })} onChange={captureInputs} />
-                      Femenino
-                    </label>
-                    <label htmlFor="masculino">
-                      <div></div>
-                      <input type="radio" id="masculino" value="masculino" {...register("genero", { required: true })} onChange={captureInputs} />
-                      Masculino
-                    </label>
-                    <label htmlFor="otro">
-                      <input type="radio" id="otro" value="otro" {...register("genero", { required: true })} onChange={captureInputs} />
-                      Otro
-                    </label>
-                  </div>
-                  {errors.genero?.type === "required" && <p className="mt-2 p-3 rounded-xl font-bold text-sm bg-red-100 text-error">El género es obligatorio</p>}
-                </>)
-              }
-              {activeStep == 3 &&
-                (
-                  <>
-                    <label
-                      htmlFor="button-file"
-                    >
+            <form onSubmit={handleSubmit(handleNext)} className="flex flex-col justify-between w-[358px] xl:min-w-[408px] mx-auto mt-[42px] pb-8 xl:pb-[124px] xl:mx-auto bg-main_color">
+              <div className="w-full mx-auto flex flex-col justify-center items-center">
+                {
+                  activeStep == 0 &&
+                  (<>
+                    <h2 className="font-nunito text-2xl text-black font-bold xl:text-3xl z-10">¿Cómo es tu nombre?</h2>
+                    <p className="w-[358px] xl:w-[408px] font-nunitosans font-semibold text-sm text-black my-4 xl:mt-[18px] xl:mb-6 text-center xl:text-base">Asi es como se va a ver en tu perfil, pero recuerda que<br /> no podrás cambiarlo más adelante. ¡Eligesa biamente! 😉</p>
+                    <div className="mb-[455px] xl:mb-[433px]">
                       <input
-                        {...register("images", { required: true })}
-                        required
-                        accept="image/*"
-                        name="images"
-                        id="button-file"
-                        type="file"
-                        onChange={uploadimg}
+                        {...register("name", { required: true })}
+                        type="text"
+                        name="name"
+                        onChange={captureInputs}
+                        value={data.name}
+                        className="w-[358px] py-2.5 px-4 border border-solid border-[#c6c6c6] rounded-2xl"
+                        placeholder="Ingresa tu nombre"
                       />
-                      <p> {files.length === 0 && "Debes subir al menos una imagen"} </p>
-                      <p>{errors.images?.type === "required" && "Debes subir al menos una imagen"}</p>
-                    </label>
-
-                    {images.map((media) => (
-                      <div
-                        role="button"
-                        tabIndex={0}
-                        key={media.id}
-                      >
-                        <div onClick={() => deleteFile(media.id)}>delete</div>
-                        <img
-                          className="w-40"
-                          src={media.url}
-                          alt="product"
-                        />
+                      {errors.name?.type === "required" && <p className="mt-2 p-3 rounded-xl font-bold text-sm bg-red-100 text-error">El nombre es obligatorio</p>}
+                    </div>
+                  </>)
+                }
+                {
+                  activeStep == 1 &&
+                  (<>
+                    <h2 className="font-nunito text-2xl text-black font-bold xl:text-3xl z-10">¿Cuándo es tu cumpleaños?</h2>
+                    <p className="font-nunitosans text-sm text-black my-4 text-start xl:mt-[18px] xl:mb-6 xl:text-base">Tus posibles amigos solo verán tu edad, no tu fecha de nacimiento.</p>
+                    <div className="w-full flex flex-col justify-center mb-[459px] xl:mb-[437px]">
+                      <input
+                        {...register("date", { required: true })}
+                        type="date"
+                        name="date"
+                        onChange={captureInputs}
+                        value={data.date}
+                        className="w-[193px] h-10 px-4 py-2 mx-auto text-base rounded-2xl text-2xl"
+                      />
+                      {errors.date?.type === "required" && <p className="w-full mt-2 p-3 rounded-xl font-bold text-sm bg-red-100 text-error">La fecha de nacimiento es obligatoria</p>}
+                    </div>
+                  </>)
+                }
+                {
+                  activeStep == 2 &&
+                  (<>
+                    <h2 className="font-nunito font-bold text-2xl mb-4 xl:text-3xl xl:w-[449px] z-10">¿Con que género te indentificas?</h2>
+                    <div className="flex flex-col justify-between xl:mt-6 mb-[412px] xl:mb-[426px] xl:w-[408px]">
+                      <div className="flex gap-4">
+                        <div className="cursor-pointer flex flex-col items-center gap-2 rounded-2xl border border-solid border-[#c6c6c6] p-4 w-[108px]">
+                          <img className="w-[40px] h-[40px]" src={female} alt="female icon" />
+                          <label className="font-nunitosans text-black text-sm" htmlFor="masculino">
+                            <input className="hidden" type="radio" id="masculino" value="masculino" {...register("genero", { required: true })} onChange={captureInputs} />
+                            Masculino
+                          </label>
+                        </div>
+                        <div className="cursor-pointer flex flex-col items-center gap-2 rounded-2xl border border-solid border-[#c6c6c6] p-4 w-[108px]">
+                          <img className="w-[40px] h-[40px]" src={male} alt="male icon" />
+                          <label className="font-nunitosans text-black text-sm" htmlFor="femenino">
+                            <input className="hidden" type="radio" id="femenino" value="femenino" {...register("genero", { required: true })} onChange={captureInputs} />
+                            Femenino
+                          </label>
+                        </div>
+                        <div className="cursor-pointer flex flex-col items-center gap-2 rounded-2xl border border-solid border-[#c6c6c6] p-4 w-[108px]">
+                          <img className="w-[40px] h-[40px]" src={other} alt="other icon" />
+                          <label className="font-nunitosans text-black text-sm" htmlFor="otro">
+                            <input className="hidden" type="radio" id="otro" value="otro" {...register("genero", { required: true })} onChange={captureInputs} />
+                            Otro
+                          </label>
+                        </div>
                       </div>
-                    ))}
-                  </>
-                )
-              }
-              {activeStep == 4 &&
-                (
-                  <>
-                    <h2 className="text-2xl mb-4">¿Qué te interesa?</h2>
-                    <div>
-                      {errors.preferences && <p>{errors.preferences?.message}</p>}
-                      <input
-                        {...register("preferences", { required: "Debes elegir una categoria" })}
-                        onChange={captureInputs}
-                        type="checkbox"
-                        name="preferences"
-                        value="deportes"
-                        id="deportes"
-                      />
-                      <label htmlFor="deportes">deportes</label>
+                      {errors.genero?.type === "required" && <p className="w-full mt-2 p-3 rounded-xl font-bold text-sm bg-red-100 text-error">El género es obligatorio</p>}
                     </div>
-                    <div>
-                      <input
-                        {...register("preferences", { required: "Debes elegir una categoria" })}
-                        onChange={captureInputs}
-                        type="checkbox"
-                        name="preferences"
-                        value="cocina"
-                        id="cocina"
-                      />
-                      <label htmlFor="cocina">cocina</label>
+                  </>)
+                }
+                {activeStep == 3 &&
+                  (<div className="flex flex-col items-start h-full">
+                    <h2 className="font-nunito font-bold text-2xl xl:text-3xl xl:text-start z-10">Añade tus fotos</h2>
+                    <p className="font-nunitosans text-sm text-black my-4 xl:mt-[18px] xl:mb-6 xl:text-base">¡Ponle cara a tu perfil! Agrega una foto y haz que nuevos amigos te reconozcan al instante.</p>
+                    <div className="mb-[203px] xl:mb-[124px] h-[264px]">
+                      <div className="flex flex-wrap gap-3">
+                        <div className={`${files.length >= 6 ? "hidden" : ""}`}>
+                          <label
+                            htmlFor="button-file"
+                            className="relative w-[111px] xl:w-[127px] h-[144px] xl:h-[144px] rounded-2xl border border-solid border-[#c6c6c6] inline-block"
+                          >
+                            <input
+                              {...register("images", { required: true })}
+                              accept="image/*"
+                              name="images"
+                              id="button-file"
+                              type="file"
+                              onChange={uploadimg}
+                              className="absolute -top-[300%] -left-[400%] pointer-events-none"
+                              multiple
+                            />
+                            <div className="w-[30px] h-[30px] absolute top-[100%] left-[100%] -translate-x-[75%] -translate-y-[75%] bg-accent1 text-white rounded-full flex justify-center items-center"><HiOutlinePlus /></div>
+                          </label>
+                        </div>
+                        {images.map((media) => (
+                          <div className="relative" key={media.id}>
+                            <div
+                              role="button"
+                              tabIndex={0}
+                              className="relative w-[111px] h-[126px] xl:w-[127px] h-[144px] rounded-2xl overflow-hidden border border-solid border-[#c6c6c6] inline-block"
+                            >
+                              <img
+                                className="w-full h-full object-cover"
+                                src={media.url}
+                                alt="image user"
+                              />
+                            </div>
+                            <div className="w-[30px] h-[30px] absolute top-[100%] left-[100%] -translate-x-[75%] -translate-y-[75%] bg-black text-white rounded-full flex justify-center items-center" onClick={() => deleteFile(media.id)}><VscChromeClose /></div>
+                          </div>
+                        ))}
+                      </div>
+                      {errors.images?.type === "required" && <p className="w-full mt-2 p-3 rounded-xl font-bold text-sm bg-red-100 text-error">Debes subir al menos una imagen.</p>}
                     </div>
-                  </>
-                )
-              }
-              {
-                activeStep == 5 &&
-                (<>
-                  <h2 className="text-2xl text-black font-bold mb-4">Cuéntanos algo breve de tu interes</h2>
-                  <textarea {...register("detailPreferences", { required: true })} cols="30" rows="5"
-                    onChange={captureInputs}
-                    value={data.detailPreferences}
-                  >
-                  </textarea>
-                  <p> {errors.detailPreferences?.type === "required" && "Este campo es obligatorio"}</p>
-                </>)
-              }
-              {
-                activeStep == 6 &&
-                <>
-                  <h2 className="text-2xl mb-4">¿Tus preferencias de distancia?</h2>
-                  <p className="mb-4">La aplicación necesita acceder a tu ubicación para encontrar las mejores coincidencias para ti.</p>
-                  <div>
-                    <input
-                      {...register("distancePreference", { required: true })} type="range"
-                      id="tempB"
-                      name="distancePreference"
-                      list="values"
-                      onChange={captureInputs}
-                      className="w-full m-0"
-                      step={10}
-                      min={0}
-                      max={100}
-                      value={data.distancePreference}
-                    />
-                    <datalist className="flex justify-between w-full" id="values">
-                      <option className="p-0" value="0" label="0"></option>
-                      <option className="p-0" value="30" label="30km"></option>
-                      <option className="p-0" value="50" label="50km"></option>
-                      <option className="p-0" value="75"></option>
-                      <option className="p-0" value="100" label="100km"></option>
-                    </datalist>
-                  </div>
-                  <p>{data.distancePreference === "50" && "La distancia es obligatoria"}</p>
-                </>
-              }
-              <div className="w-full min-h-full p-4 inline-block">
+                  </div>)
+                }
+                {activeStep == 4 &&
+                  (<div className="relative">
+                    <h2 className="font-nunito font-bold text-2xl xl:text-3xl z-10">Tus pasatiempos</h2>
+                    <p className="font-nunitosans text-sm text-black my-4 xl:mt-[18px] xl:mb-6 xl:text-base">Selecciona tu favorito para encontrar amigos con intereses similares.</p>
+                    <div className="flex flex-wrap gap-4 my-4 xl:w-[545px] xl:mt-[13px] xl:mb-[18px] mx-auto">
+                      {categories?.map(category => (
+                        <div key={category.id}>
+                          <label htmlFor={category.id}>
+                            <img className="w-[171px] h-[124px] rounded-2xl overflow-hidden" src={category.src} alt={`image ${category.id}`} />
+                            <input
+                              {...register("preferences", { required: true })}
+                              onChange={captureInputs}
+                              type="checkbox"
+                              name="preferences"
+                              value={category.id}
+                              id={category.id}
+                              className="absolute -top-[100%] -left-[100%] pointer-events-none"
+                            />
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                    <h2 className="font-nunito font-bold text-2xl z-10">Otros intereses</h2>
+                    <div className="xl:mb-[78px]">
+                      <div className="flex flex-wrap gap-4 my-4 xl:w-[586px]">
+                        {otherCategories?.map(category => (
+                          <div key={category.id}>
+                            <label htmlFor={category.id} className="font-nunitosans text-black text-sm px-2 py-1 border border-solid border-[#c6c6c6] rounded-lg">
+                              <input
+                                {...register("preferences")}
+                                onChange={captureInputs}
+                                type="checkbox"
+                                name="preferences"
+                                value={category.id}
+                                id={category.id}
+                                className="absolute -top-[100%] -left-[100%] pointer-events-none"
+                              />
+                              <span>{category.label}</span>
+                            </label>
+                          </div>
+                        ))}
+                      </div>
+                      {errors.preferences?.type === "required" && <p className="w-full mt-2 p-3 rounded-xl font-bold text-sm bg-red-100 text-error">Las categorias son obligatorias.</p>}
+                    </div>
+                  </div>)
+                }
+                {
+                  activeStep == 5 &&
+                  (<>
+                    <div className="w-full flex justify-start">
+                      <h2 className="text-2xl text-black font-bold mb-4 xl:text-3xl z-10">¡Nos encanta el<br /> interés que elegiste!</h2>
+                    </div>
+                    <div className="w-full mb-[391px] xl:mb-[332px] xl:mt-4">
+                      <textarea style={{ resize: "none" }} {...register("detailPreferences", { required: true })}
+                        onChange={captureInputs}
+                        value={data.detailPreferences}
+                        placeholder="Describe de manera breve en qué consiste o qué es lo que te gusta hacer específicamente."
+                        className="w-full h-[100px] py-2.5 px-4 rounded-lg border border-solid border-[#c6c6c6] :placeholder:text-sm :placeholder:font-nunitosans font-nunitosans text-sm"
+                      >
+                      </textarea>
+                      {errors.detailPreferences?.type === "required" && <p className="w-full mt-2 p-3 rounded-xl font-bold text-sm bg-red-100 text-error">Este campo es obligatorio.</p>}
+                    </div>
+                  </>)
+                }
+                {
+                  activeStep == 6 &&
+                  (<>
+                    <h2 className="text-2xl text-black font-bold mb-4 text-center xl:text-3xl">¿Dónde estás?</h2>
+                    <p className="font-nunitosans text-sm text-black my-4 text-center xl:text-base">Para encontrar las mejores coincidencias para ti, necesitamos acceder a tu ubicación. ¡No te preocupes, es completamente seguro y confidencial! </p>
+                    <div className="w-[358px] mb-[70px]">
+                      <img className="w-full" src={ubication} alt="ubication image" />
+                    </div>
+                  </>)
+                }
+                {
+                  activeStep == 7 &&
+                  (<>
+                    <h2 className="font-nunito font-bold text-2xl mb-4 text-center xl:text-3xl z-10">¿Tus preferencias de<br /> distancia?</h2>
+                    <p className="mb-[59px] text-sm xl:text-base">De esta manera, podremos conectarte con personas que compartan tu misma pasión y vivan cerca de ti.</p>
+                    <div className="w-full text-accent1 mb-[309px] xl:mb-[312px]">
+                      <input
+                        {...register("distancePreference", { required: true })} type="range"
+                        id="tempB"
+                        name="distancePreference"
+                        list="values"
+                        onChange={captureInputs}
+                        className="w-full cursor-pointer rounded-lg xl:w-[408px]"
+                        step={5}
+                        min={0}
+                        max={50}
+                        value={data.distancePreference}
+                      />
+                      <datalist className="font-nunitosans text-2xl font-bold flex justify-between w-full text-black" id="values">
+                        <option className="p-0" value="0" label="0 km"></option>
+                        <option className="p-0" value="10" label=""></option>
+                        <option className="p-0" value="20" label=""></option>
+                        <option className="p-0" value="30" label=""></option>
+                        <option className="p-0" value="40" label=""></option>
+                        <option className="p-0" value="50" label="50 km"></option>
+                      </datalist>
+                    </div>
+                    {errors.distancePreference?.type === "required" && <p className="w-full mt-2 p-3 rounded-xl font-bold text-sm bg-red-100 text-error">La distancia es obligatoria</p>}
+                  </>)
+                }
+                {/* <div className="w-full min-h-full p-4 inline-block"> */}
                 {/* {isStepOptional(activeStep) && (
                   <button onClick={handleSkip}
                     className="transition duration-200 bg-accent2 text-black py-2.5 rounded-lg text-sm shadow-sm hover:shadow-md font-semibold text-center inline-block text-base font-bold h-12 w-full"
@@ -486,18 +553,19 @@ const Preferences = () => {
                     skip
                   </button>
                 )} */}
-                <button
-                  className="cursor-pointer transition duration-200 bg-accent2 text-black py-2.5 rounded-2xl text-sm shadow-sm hover:shadow-md text-center inline-block text-base font-bold absolute left-0 right-0 bottom-10 h-12 mx-4"
-                  type="submit"
-                >
-                  {activeStep === steps.length - 1 ? "Finalizar" : "Continuar"}
-                </button>
               </div>
+              <button
+                className="w-full xl:w-[358px] cursor-pointer transition duration-200 bg-accent2 text-black py-2.5 mx-auto mt-4 rounded-2xl text-sm shadow-sm hover:shadow-md text-center inline-block text-base font-bold h-12 self-end xl:text-[24px]"
+                type="submit"
+              >
+                {activeStep === steps.length - 1 ? "Finalizar" : activeStep === 6 ? "Permitir y continuar" : "Continuar"}
+              </button>
             </form>
           </FormProvider>
         </>
-      )}
-    </div>
+      )
+      }
+    </div >
   );
 };
 
