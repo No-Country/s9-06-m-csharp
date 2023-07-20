@@ -4,14 +4,13 @@ import { Home, Login, Register, Preferences, Swipe } from './Views'
 import Conversations from './Components/Chat/conversations/conversations'
 import { useContext } from 'react'
 import { AuthContext } from './Context/AuthContext'
-import InterestedProfiles from './Views/InterestedProfiles'
 
 function App() {
 	const { user } = useContext(AuthContext)
 
 	return (
 		<Routes>
-			<Route path='/' element={<InterestedProfiles />} />
+			<Route path='/' element={<Home />} />
 			<Route path='/login' element={user ? <Swipe /> : <Login />} />
 			<Route
 				path='/conversations'
