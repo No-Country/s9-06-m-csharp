@@ -20,7 +20,7 @@ const Conversations = () => {
 			lastMessage: 'Hola como estas?',
 		},
 		{
-			name: 'Debora Eltrozo',
+			name: 'Debora Meltrozo',
 			img: imgTest,
 			lastMessage: 'Tienes razon',
 		},
