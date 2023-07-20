@@ -311,7 +311,45 @@ namespace buddyUp.Controllers
                 return new JsonResult(_.Message);
             }
         }
+        [HttpPut]
+        [Route("pref-distance")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        public ActionResult<Response> UpdatePrefDistance([FromBody] PrefsDto dto)
+        {
+            try
+            {
+                var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
 
+                if (userId is not null)
+                {         
+                    int cambiosPerifil = _userRepository.SetDistancePreference(userId, dto.minimum, dto.maximum);
+                    if (cambiosPerifil == 1)
+                    {
+                        return Ok(new Response
+                        {
+                            Message = $"The preferences for distance were added to the user",
+                            Status = "OK"
+                        });
+                    }
+                    else
+                    {
+                        return BadRequest(new Response
+                        {
+                            Message = $"Can't add the preferences",
+                            Status = "NOT OK"
+                        });
+                    }
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+            }
+            catch (Exception _)
+            {
+                return new JsonResult(_.Message);
+            }
+        }
     }
 }
 
