@@ -1,16 +1,29 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react';
+import { useWebSocket } from 'react-use-websocket';
 import img from '../../../images/imageTest.jpg'
 import { VscSend } from 'react-icons/vsc'
 const Chat = () => {
-	const [message, setMessage] = useState('')
-	const [messages, setMessages] = useState([])
+	const [message, setMessage] = useState('');
+	const [chatLog, setChatLog] = useState([]);
+	const socketUrl = 'http://localhost:5173/'
 
-	const handleMsj = () => {
-		console.log('enviando mensajituu')
-	}
+	  // Establece la conexión WebSocket con el servidor
+	  const { sendJsonMessage } = useWebSocket(socketUrl, {
+		onMessage: (event) => {
+		  const { user, message } = JSON.parse(event.data);
+		  setChatLog((prevChatLog) => [...prevChatLog, { user, message }]);
+		},
+	  });
+  const handleSendMessage = (e) => {
+    e.preventDefault();
+    if (message.trim() !== '') {
+      sendJsonMessage({ user: 'User1', message }); 
+      setMessage('');
+    }
+  };
 	return (
 		<div className='h-screen bg-white text-white flex items-center justify-center'>
-			<form className=' bg-white'>
+			<form className=' bg-white' onSubmit={handleSendMessage} >
 				<div className='flex flex-col justify-center items-center'>
 					<p className='text-center text-black'>Nueva amistad</p>
 					<div className='w-16 h-16'>
@@ -60,8 +73,8 @@ const Chat = () => {
 
 				<input
 					type='text'
-					// onChange={(e) => setMessage(e.target.value)}
-					// value={message}
+					value={message}
+					onChange={(e) => setMessage(e.target.value)}
 					className=' w-full rounded-xl border border-gray-700 bg-white p-2 pl-16  text-start'
 					placeholder='Ingrese su mensaje aqui'
 				/>
