@@ -1,40 +1,57 @@
 import React, { useState, useEffect } from 'react';
-import io from 'socket.io-client';
+import {io} from 'socket.io-client';
 import { VscSend } from 'react-icons/vsc';
-import img from '../../../images/imageTest.jpg'
+import img from '../../../images/imageTest.jpg';
+
 const Chat = () => {
   const [message, setMessage] = useState('');
   const [chatLog, setChatLog] = useState([]);
-  const socketUrl = 'http://localhost:5173'; // Sin la barra diagonal al final
 
   // Establece la conexión WebSocket con el servidor
-  const socket = io(socketUrl);
 
-  // Maneja los mensajes recibidos del servidor
+  const socket = io("http://localhost:5173", { 
+	transports: ["websocket"],
+	timeout: 600000 
+  });
+  
   useEffect(() => {
-    socket.on('message', (data) => {
-      const { user, message } = data;
-      setChatLog((prevChatLog) => [...prevChatLog, { user, message }]);
+    socket.on('connect', () => {
+      console.log('Conectado al servidor de Socket.IO');
     });
 
-    // Limpieza: desconectar cuando el componente se desmonte
+    socket.on('connect_error', (error) => {
+      console.error('Error de conexión:', error.message);
+    });
+
+    socket.on('error', (error) => {
+      console.error('Error en la conexión:', error.message);
+    });
+
+    // Maneja los mensajes recibidos del servidor
+    const handleReceiveMessage = (data) => {
+      const { user, message } = data;
+      setChatLog((prevChatLog) => [...prevChatLog, { user, message }]);
+    };
+
+    socket.on('message', handleReceiveMessage);
+
+    // Limpieza: detener la escucha del evento al desmontar el componente
     return () => {
-      socket.disconnect();
+      socket.off('message', handleReceiveMessage);
     };
   }, [socket]);
   const handleSendMessage = (e) => {
     e.preventDefault();
     if (message.trim() !== '') {
-      socket.emit('message', { user: 'User1', message });
-	  console.log('Enviando mensaje:', message); 
-      setMessage('');
+	  socket.emit('message',message);
+	  setMessage('');
     }
 
   };
   // Función para seleccionar al destinatario (enviar evento al servidor)
   const handleSelectRecipient = () => {
-    const fromUserId = 'User1'; // Cambia esto por el ID del usuario actual
-    const toUserId = 'User2'; // Cambia esto por el ID del destinatario seleccionado
+    const fromUserId = 'user 1'; // Cambia esto por el ID del usuario actual
+    const toUserId = '1000132'; // Cambia esto por el ID del destinatario seleccionado
 
     socket.emit('selectRecipient', { fromUserId, toUserId });
   };

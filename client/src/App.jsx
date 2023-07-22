@@ -13,7 +13,7 @@ function App() {
 			<Route path='/' element={<Home />} />
 			<Route path='/login' element={user ? <Swipe /> : <Login />} />
 			<Route
-				path='/chat'
+				path='/Chat'
 				element={user ? <Chat /> : <Login />}
 			/>
 			<Route path='/register' element={user ? <Swipe /> : <Register />} />
