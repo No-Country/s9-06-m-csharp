@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { Home, Login, Register, Preferences, Swipe } from './Views'
+import Conversations from './Components/Chat/conversations/conversations'
 import Chat from './Components/Chat/Chat';
 import { useEffect, useState } from "react";
 import Notification from './Components/PushNotification/Notification';
@@ -14,13 +15,16 @@ function App() {
 
 	return (
 		<Routes>
-			<Route path="/" element={<Home />} />
-			<Route path="/login" element={token ? <Swipe /> : <Login />} />
-			<Route path="/chat" element={token ? <Chat /> : <Login />} />
-			<Route path="/register" element={token ? <Swipe /> : <Register />} />
-			<Route path="/preferences" element={token ? <Preferences /> : <Login />} />
-			<Route path="/swipe" element={token ? <Swipe /> : <Login />} />
-			<Route path="*" element={<Navigate replace={true} to="/" />} />
+			<Route path='/' element={<Home />} />
+			<Route path='/login' element={token ? <Swipe /> : <Login />} />
+			<Route
+				path='/conversations'
+				element={token ? <Conversations /> : <Login />}
+			/>
+			<Route path='/register' element={token ? <Swipe /> : <Register />} />
+			<Route path='/preferences' element={token ? <Preferences /> : <Login />} />
+			<Route path='/swipe' element={token ? <Swipe /> : <Login />} />
+			<Route path='*' element={<Navigate replace={true} to='/' />} />
 			<Route path="/notication" element={<Notification />} />
 		</Routes>
 	)

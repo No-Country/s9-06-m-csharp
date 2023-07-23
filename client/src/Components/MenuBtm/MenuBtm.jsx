@@ -17,7 +17,7 @@ const MenuBtm = () => {
 					<AiOutlineStar className='text-white text-2xl' />
 				</button>
 			</NavLink>
-			<NavLink to='/chat'>
+			<NavLink to='/conversations'>
 				<button className='group flex flex-col items-center justify-center w-16 h-16'>
 					<BsChatDots className='text-white text-2xl' />
 				</button>
