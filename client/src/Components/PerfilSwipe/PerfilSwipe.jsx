@@ -5,6 +5,7 @@ import {
 	FaMars,
 	FaBirthdayCake,
 } from 'react-icons/fa'
+import Carrusel from '../Carrusel/Carrusel.jsx'
 import Tag from '../Tag/Tag.jsx'
 import MatchButtons from '../MatchButtons/MatchButtons.jsx'
 
@@ -85,11 +86,7 @@ const PerfilSwipe = () => {
 					/>
 				</div>
 			</div>
-			<div className='flex justify-center gap-7 mt-4'>
-				<div className='bg-gray-300 rounded-lg w-24 h-32'></div>
-				<div className='bg-gray-300 rounded-lg w-24 h-32'></div>
-				<div className='bg-gray-300 rounded-lg w-24 h-32'></div>
-			</div>
+			<Carrusel />
 			<div className='bg-white border border-gray-400 rounded-xl p-4 mx-4 mt-4'>
 				<p className='font-bold'>Mis intereses</p>
 				<div className='mt-4'>
