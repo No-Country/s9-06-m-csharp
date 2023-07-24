@@ -10,9 +10,9 @@ const MenuTop = () => {
 	const handleLogOut = () => {
 		setNavbar(!navbar)
 		sessionStorage.removeItem('token')
-		navigate('/')
+		navigate("/");
+		window.location.reload(false);
 	}
-
 	return (
 		<nav className='sticky h-16 w-full top-0 left-0 z-40 bg-white'>
 			<div className='justify-between mx-auto lg:max-w-7xl md:items-center md:flex md:pr-8'>
@@ -35,9 +35,8 @@ const MenuTop = () => {
 				</div>
 				<div>
 					<div
-						className={`flex-1 justify-self-center text-center pb-3 md:block md:bg-red-400 md:h-fit md:pb-0 ${
-							navbar ? 'h-screen' : 'hidden'
-						}`}
+						className={`flex-1 justify-self-center text-center pb-3 md:block md:bg-red-400 md:h-fit md:pb-0 ${navbar ? 'h-screen' : 'hidden'
+							}`}
 					>
 						<ul className='items-center justify-center space-y-8 bg-white md:flex md:space-x-6 md:space-y-0'>
 							<li className='hover:text-blue-400 transition delay-75'>
