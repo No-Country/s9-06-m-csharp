@@ -10,24 +10,6 @@ import Tag from '../Tag/Tag.jsx'
 import MatchButtons from '../MatchButtons/MatchButtons.jsx'
 
 const PerfilSwipe = () => {
-	const tagsArriba = [
-		'Aprender a cocinar',
-		'Recetas',
-		'Repostería',
-		'Fotografía',
-		'Salir a correr',
-		'♂ 22',
-	]
-	const interesesAbajo = [
-		'Aprender a cocinar',
-		'Recetas',
-		'Repostería',
-		'Fotografía',
-		'Ir al cine',
-		'Salir a correr',
-		'Tecnología',
-		'Ciencia ficción',
-	]
 
 	return (
 		<>
