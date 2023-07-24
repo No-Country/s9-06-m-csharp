@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Stepper,
   Step,
@@ -33,6 +33,7 @@ import ellipse1 from "../images/ellipse-1.png";
 import ellipse2 from "../images/ellipse-2.png";
 import ellipse3 from "../images/ellipse-3.png";
 import { useNavigate } from "react-router";
+import axios from "axios";
 
 const categories = [
   { id: "deporte", src: `${categoryDeporte}` },
@@ -70,6 +71,7 @@ function getSteps() {
 }
 
 const Preferences = () => {
+  const [token, setToken] = useState("");
   const { methods, register, handleSubmit, formState: { errors } } = useForm();
   const [data, setData] = useState({
     name: "",
@@ -90,6 +92,10 @@ const Preferences = () => {
   const [images, setImages] = useState([]);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    setToken(sessionStorage.getItem("token"));
+  }, [token]);
 
   const steps = getSteps();
 
@@ -125,28 +131,64 @@ const Preferences = () => {
     return skippedSteps.includes(step);
   };
 
-  const handleNext = () => {
-    console.log(data);
-    console.log("files: ", files);
-    console.log("images: ", images);
+  const handleNext = async () => {
+    // console.log(data);
+    // console.log("files: ", files);
+    // console.log("images: ", images);
     if (activeStep == 6) {
       // si el navegador soporta geolocalizacion
       if (navigator.geolocation) {
         // pedimos los datos de geolocalizacion al navegador
         navigator.geolocation.getCurrentPosition(
           function (positionUser) {
-            setPosition({ latitude: positionUser.coords.latitude, longitude: positionUser.coords.longitude })
+            setPosition({ Latitude: positionUser.coords.latitude, Longitude: positionUser.coords.longitude })
           })
       }
     }
-    console.log(position);
+    // console.log(position);
     if (activeStep == steps.length - 1) {
-      fetch("https://jsonplaceholder.typicode.com/comments")
-        .then((data) => data.json())
-        .then((res) => {
-          console.log(res);
+      const api = "https://buddyup.azurewebsites.net/api/account";
+      const headerConfig = {
+        headers: {
+          "Authorization": "Bearer " + JSON.parse(token),
+          "Content-Type": "application/json",
+        }
+      }
+
+      const arrayTags = data.preferences.map(preference => { return { id: uuidv4(), name: preference } });
+      console.log(arrayTags);
+      console.log(JSON.stringify(arrayTags))
+
+      const requests = [
+        axios.put(`${api}/name`, { description: data.name }, headerConfig),
+        axios.put(`${api}/b-day`, { birthday: data.date }, headerConfig),
+        axios.put(`${api}/gender`, { description: data.genero }, headerConfig),
+        axios.put(`${api}/tag`, JSON.stringify(arrayTags), headerConfig),
+        axios.put(`${api}/quote`, { description: data.detailPreferences }, headerConfig),
+        axios.put(`${api}/pref-distance`, JSON.stringify({
+          minimum: 1,
+          maximum: Number(data.distancePreference)
+        }), headerConfig),
+        axios.put(`${api}/location`, position, headerConfig)
+      ]
+
+      Promise.all([
+        requests
+      ])
+        .then(responses => {
+          console.log(responses);
           setActiveStep(activeStep + 1);
-        });
+          return values
+        }).catch(err => {
+          console.log(err);
+        })
+
+      // fetch("https://jsonplaceholder.typicode.com/comments")
+      //   .then((data) => data.json())
+      //   .then((res) => {
+      //     console.log(res);
+      //     setActiveStep(activeStep + 1);
+      //   });
     } else {
       setActiveStep(activeStep + 1);
       setSkippedSteps(
@@ -169,7 +211,7 @@ const Preferences = () => {
   async function uploadimg(e) {
     const file = e.target.files[0];
     if (file) {
-      console.log("e---image", files, images);
+      // console.log("e---image", files, images);
 
       setImages([...images, (await readFileAsync(file))]);
       setFiles([...files, file]);
