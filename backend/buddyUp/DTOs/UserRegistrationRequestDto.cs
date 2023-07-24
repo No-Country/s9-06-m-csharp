@@ -3,8 +3,7 @@
 namespace buddyUp.DTOs
 {
     public class UserRegistrationRequestDto
-    {
-        [Required]
+    {        
         public string FullName { get; set; }
         [Required]
         public string Email { get; set; }

@@ -22,6 +22,32 @@ namespace buddyUp.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("buddyUp.Models.Match", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
+
+                    b.Property<bool>("isMatch")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("userp1_id")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("userp2_id")
+                        .HasColumnType("integer");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("userp1_id");
+
+                    b.HasIndex("userp2_id");
+
+                    b.ToTable("Match");
+                });
+
             modelBuilder.Entity("buddyUp.Models.Photo", b =>
                 {
                     b.Property<int>("Id")
@@ -59,16 +85,32 @@ namespace buddyUp.Migrations
                     b.Property<int>("age")
                         .HasColumnType("integer");
 
+                    b.Property<string>("aprox_location")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("bio")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime>("date_of_birth")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("gender")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("maximun_age")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("maximun_distance")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("minimun_age")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("minimun_distance")
+                        .HasColumnType("integer");
 
                     b.Property<string>("name")
                         .IsRequired()
@@ -325,6 +367,25 @@ namespace buddyUp.Migrations
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
                     b.HasDiscriminator().HasValue("ApplicationUser");
+                });
+
+            modelBuilder.Entity("buddyUp.Models.Match", b =>
+                {
+                    b.HasOne("buddyUp.Models.Profile", "user1")
+                        .WithMany()
+                        .HasForeignKey("userp1_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("buddyUp.Models.Profile", "user2")
+                        .WithMany()
+                        .HasForeignKey("userp2_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("user1");
+
+                    b.Navigation("user2");
                 });
 
             modelBuilder.Entity("buddyUp.Models.Photo", b =>

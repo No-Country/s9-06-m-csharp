@@ -3,6 +3,7 @@ using buddyUp.Helpers;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,8 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.Services.AddHttpsRedirection(opt => opt.HttpsPort = 443);
 
 builder.Services.AddControllersWithViews();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -48,26 +51,12 @@ builder.Services.AddAuthentication(options =>
         ValidateLifetime = true
     };
 });
-//builder.Services.AddAuthentication(options =>
-//{
-//    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-//}).AddCookie(
-////    options =>
-////{
-////    options.LoginPath = "/api/auth/google-login";
-////}
-//).AddGoogle(googleOptions =>
-//{
-//    googleOptions.ClientId = builder.Configuration["Google:ClientId"];
-//    googleOptions.ClientSecret = builder.Configuration["Google:ClientSecret"];
-//});
-//    .AddFacebook(facebookOptions =>
-//{
-//    facebookOptions.ClientId = builder.Configuration["Facebook:ClientId"];
-//    facebookOptions.AppSecret = builder.Configuration["Facebook:ClientSecret"];
-//    facebookOptions.AccessDeniedPath = "/AccessDeniedPathInfo";
-//})
 
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders =
+        ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+});
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 options.SignIn.RequireConfirmedEmail = false)
@@ -75,6 +64,7 @@ options.SignIn.RequireConfirmedEmail = false)
 
 builder.Services.AddScoped<IUserProfileRepository, UserProfileRepository>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
+builder.Services.AddScoped<IMatchRepository, MatchRepository>();
 //builder.Services.AddScoped<IProfileRespository, ProfileRespository>();
 // puede ser pa?! puede ser?!
 //builder.Services.Configure<IdentityOptions>(
@@ -85,19 +75,32 @@ builder.Services.AddScoped<ITagRepository, TagRepository>();
 //        options.ClaimsIdentity.UserIdClaimType = ClaimTypes.Email;
 //        options.ClaimsIdentity.UserIdClaimType = "Id";
 //    });
-
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 var app = builder.Build();
 
+app.UseForwardedHeaders();//cuidado
+
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+if (!app.Environment.IsDevelopment())
+{  
+    app.UseHsts();
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+        options.RoutePrefix = string.Empty;
+    });
 }
 
+
+app.UseSwagger();
+app.UseSwaggerUI();
+
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 
 app.UseAuthentication();
+
 app.UseAuthorization();
 
 app.MapControllers();

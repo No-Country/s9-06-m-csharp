@@ -8,6 +8,9 @@ using System.Reflection;
 using System.Data.SqlClient;
 using Dapper;
 using System.Data;
+using Npgsql;
+using Geolocation;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 
 namespace buddyUp.Data
 {
@@ -108,18 +111,18 @@ namespace buddyUp.Data
 
         public int SetTags(string id, List<TagDto> tags)
         {          
-            var procedureName = "SetUserTags";
+            var procedureName = "public.setusertags";
             int cambiosEnProfileTag = 0;
             Profile? profile = GetProfileById(id);
             if (profile is not null)
             { 
-                using (var connection = new SqlConnection(_config["SqlServer:ConnectionString"]))
+                using (var connection = new NpgsqlConnection(_config["PostgreSql:ConnectionString"]))
                 {
                     foreach(var theTag in tags)
                     {
                         cambiosEnProfileTag += connection.Execute(
                             procedureName, 
-                            new { tagId = theTag.id, ProfileId = profile.Id }, 
+                            new { tagid = theTag.id, profileid = profile.Id }, 
                             commandType: CommandType.StoredProcedure);
                     }                        
                 }
@@ -198,6 +201,112 @@ namespace buddyUp.Data
                     throw new Exception("Gender has not the proper format");
             }
         }
+
+        public int SetLocation(string id, Coordinate coordinate)
+        {
+            if (_context.Users.Any(u => u.Id == id))
+            {
+                Profile? profile = GetProfileById(id);
+                if (profile is not null)
+                {                    
+                    using (var connection = new NpgsqlConnection(_config["PostgreSql:ConnectionString"]))
+                    {
+                        
+                        return connection.Execute(
+                            "public.insert_location",
+                            new { longitude_new = coordinate.Longitude, latitude_new = coordinate.Latitude, profile_id = profile.Id },
+                            commandType: CommandType.StoredProcedure);
+                    }                   
+                }
+                else
+                {
+                    return -1;
+                }
+            }
+            return -1;
+        }
+
+        public int SetAgePreference(string id, int min, int max)
+        {
+            if (_context.Users.Any(u => u.Id == id))
+            {
+                Profile? profile = GetProfileById(id);
+                if (profile is null)
+                {
+                    profile = new Profile();
+                    profile.minimun_age = min;
+                    profile.maximun_age = max;
+                    _context.Profile.Add(profile);
+                    return _context.SaveChanges();
+                }
+                else
+                {
+                    profile.minimun_age = min;
+                    profile.maximun_age = max;
+                    return _context.SaveChanges();
+                }
+            }
+            return -1;
+        }
+
+        public int SetDistancePreference(string id, int min, int max)
+        {
+            if (_context.Users.Any(u => u.Id == id))
+            {
+                Profile? profile = GetProfileById(id);
+                if (profile is null)
+                {
+                    profile = new Profile();
+                    profile.minimun_distance = min;
+                    profile.maximun_distance = max;
+                    _context.Profile.Add(profile);
+                    return _context.SaveChanges();
+                }
+                else
+                {
+                    profile.minimun_distance = min;
+                    profile.maximun_distance = max;
+                    return _context.SaveChanges();
+                }
+            }
+            return -1;
+        }
+
+        public IEnumerable<ProfileIntermediateDto> GetSelectionOfProfiles(int id_perfil)
+        {
+            var procedureName = "public.get_view_for_users";
+            IEnumerable<ProfileIntermediateDto> table = new List<ProfileIntermediateDto>(); 
+            Profile? profile = _context.Profile.Where(p => p.Id == id_perfil).FirstOrDefault();
+            using (var connection = new NpgsqlConnection(_config["PostgreSql:ConnectionString"]))
+            {
+
+                table = connection.Query<ProfileIntermediateDto>(
+                    procedureName, new
+                    {
+                        age_minimum = profile.minimun_age,
+                        age_maximum = profile.maximun_age,
+                        distance_minimum = profile.minimun_distance,
+                        distance_maximum = profile.maximun_distance * 1000, // está en metros en la bd
+                        current_profile = profile.Id
+                    },
+                    commandType: CommandType.StoredProcedure); ;
+                    
+            }
+            return table;            
+        }
+        //public string[] GetTagsOfUser(int profileId)
+        //{
+        //    using (var connection = new NpgsqlConnection(_config["PostgreSql:ConnectionString"]))
+        //    {
+        //        foreach (var theTag in tags)
+        //        {
+        //            cambiosEnProfileTag += connection.Execute(
+        //                procedureName,
+        //                new { tagid = theTag.id, profileid = profile.Id },
+        //                commandType: CommandType.StoredProcedure);
+        //        }
+        //    }
+        //}
         //public User SetProfile(User user)
         //{
         //    var user = _users.Find(u => u.Id == ObjectId.Parse(id).ToString()).FirstOrDefault();
@@ -213,6 +322,6 @@ namespace buddyUp.Data
         //    }
         //    return null;
         //}
-        }
+    }
 
     }

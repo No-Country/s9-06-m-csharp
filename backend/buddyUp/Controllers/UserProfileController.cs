@@ -3,6 +3,7 @@ using buddyUp.Data;
 using buddyUp.DTOs;
 using buddyUp.Helpers;
 using buddyUp.Models;
+using Geolocation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -56,7 +57,7 @@ namespace buddyUp.Controllers
                     {
                         return BadRequest(new Response
                         {
-                            Message = "The birthad cannot be store.",
+                            Message = "The birthay cannot be store.",
                             Status = "NOT OK"
                         });
                     }
@@ -237,13 +238,13 @@ namespace buddyUp.Controllers
                 if (userId is not null)
                 {
                     int cambiosTablaAsociativa = _userRepository.SetTags(userId, tags);
-                    if (cambiosTablaAsociativa == tags.Count())
+                    if (cambiosTablaAsociativa == tags.Count() * -1) // los cambios los devuelve como opuesto aritmético no se por qué
                     {
                         return Ok(new Response
                         {
                             Message = $"All tags were added to the user",
                             Status = "OK"
-                        });
+                        }); 
                     }                    
                     else
                     {
@@ -265,7 +266,90 @@ namespace buddyUp.Controllers
             }
         }
 
+        [HttpPut]
+        [Route("location")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        public ActionResult<Response> UpdateLocation([FromBody] Coordinate coordinate)
+        {
+            try
+            {
+                var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
 
+                if (userId is not null)
+                {
+                    //string[] coordintatesParts = sCoordinates.Split(",");
+                    //Coordinate coordinate = new()
+                    //{
+                    //    Latitude = Double.Parse(coordintatesParts[0]),
+                    //    Longitude = Double.Parse(coordintatesParts[1])
+                    //};
+                    int cambiosPerifil = _userRepository.SetLocation(userId, coordinate);
+                    if (cambiosPerifil ==  -1) 
+                    {
+                        return Ok(new Response
+                        {
+                            Message = $"The aproximated location were added to the user",
+                            Status = "OK"
+                        });
+                    }
+                    else
+                    {
+                        return BadRequest(new Response
+                        {
+                            Message = $"Can't add the geoloaction without other data in profile",
+                            Status = "NOT OK"
+                        });
+                    }
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+            }
+            catch (Exception _)
+            {
+                return new JsonResult(_.Message);
+            }
+        }
+        [HttpPut]
+        [Route("pref-distance")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        public ActionResult<Response> UpdatePrefDistance([FromBody] PrefsDto dto)
+        {
+            try
+            {
+                var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
+
+                if (userId is not null)
+                {         
+                    int cambiosPerifil = _userRepository.SetDistancePreference(userId, dto.minimum, dto.maximum);
+                    if (cambiosPerifil == 1)
+                    {
+                        return Ok(new Response
+                        {
+                            Message = $"The preferences for distance were added to the user",
+                            Status = "OK"
+                        });
+                    }
+                    else
+                    {
+                        return BadRequest(new Response
+                        {
+                            Message = $"Can't add the preferences",
+                            Status = "NOT OK"
+                        });
+                    }
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+            }
+            catch (Exception _)
+            {
+                return new JsonResult(_.Message);
+            }
+        }
     }
 }
 

@@ -11,10 +11,11 @@ namespace buddyUp.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         public int Id { get; set; }
+        [Required]
         public string name { get; set; } = String.Empty;
         //public List<Profile> UsersWithInterest { get; set; } = new();
         [Column("profileId")]
-        [JsonIgnore]
+        [JsonIgnore]        
         public List<Profile> UsersWithInterest { get; set; } = null;
     }
 }

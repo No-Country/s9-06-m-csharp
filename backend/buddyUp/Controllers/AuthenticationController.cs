@@ -39,62 +39,68 @@ namespace buddyUp.Controllers
         public async Task<IActionResult> Register([FromBody] UserRegistrationRequestDto requestDto)
         {
             // validate the incoming request
-            if (ModelState.IsValid)
+            try
             {
-                // does the mf user exists?
-                var user_exist = await _userManager.FindByNameAsync(requestDto.Email);
-                if (user_exist is not null)
+                if (ModelState.IsValid)
                 {
-                    return BadRequest(new AuthResult()
+                    // does the mf user exists?
+                    var user_exist = await _userManager.FindByNameAsync(requestDto.Email);
+                    if (user_exist is not null)
                     {
-                        Result = false,
-                        Errors = new List<string>()
+                        return BadRequest(new AuthResult()
                         {
-                            "Email already exist"
-                        },
-                    });
-                }
-                var user = new IdentityUser()
-                {                    
-                    Email = requestDto.Email,
-                    UserName = requestDto.Email
-                };                
+                            Result = false,
+                            Errors = new List<string>()
+                            {
+                                "Email already exist"
+                            },
+                        });
+                    }
+                    var user = new IdentityUser()
+                    {                    
+                        Email = requestDto.Email,
+                        UserName = requestDto.Email
+                    };                
 
-                var is_created = await _userManager.CreateAsync(user, requestDto.Password);
+                    var is_created = await _userManager.CreateAsync(user, requestDto.Password);
                
-                if (is_created.Succeeded)
-                {
-                    if (await _roleManager.RoleExistsAsync(UserRoles.User))
+                    if (is_created.Succeeded)
                     {
-                        await _userManager.AddToRoleAsync(user, UserRoles.User);
+                        if (await _roleManager.RoleExistsAsync(UserRoles.User))
+                        {
+                            await _userManager.AddToRoleAsync(user, UserRoles.User);
+                        }
+                        else
+                        {
+                            await _roleManager.CreateAsync(new IdentityRole(UserRoles.User));
+                            await _userManager.AddToRoleAsync(user, UserRoles.User);
+                        }                    
+                        var token = GenerateJwtToken(user);
+                        return Ok(new AuthResult()
+                        {
+                            Result = true,
+                            Token = token
+                        });
                     }
                     else
                     {
-                        await _roleManager.CreateAsync(new IdentityRole(UserRoles.User));
-                        await _userManager.AddToRoleAsync(user, UserRoles.User);
-                    }                    
-                    var token = GenerateJwtToken(user);
-                    return Ok(new AuthResult()
-                    {
-                        Result = true,
-                        Token = token
-                    });
+                        return BadRequest(new AuthResult()
+                        {
+                            Errors = new List<string>()
+                            {
+                                "Server Error",
+                            },
+                            Result = false
+                        });
+                    }
                 }
                 else
                 {
-                    return BadRequest(new AuthResult()
-                    {
-                        Errors = new List<string>()
-                        {
-                            "Server Error"
-                        },
-                        Result = false
-                    });
+                    return BadRequest();
                 }
-            }
-            else
+            }catch(Exception ex)
             {
-                return BadRequest();
+                return new JsonResult(ex);
             }
         }
 
