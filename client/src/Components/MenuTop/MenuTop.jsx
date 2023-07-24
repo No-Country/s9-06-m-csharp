@@ -10,6 +10,7 @@ const MenuTop = () => {
 	const handleLogOut = () => {
 		setNavbar(!navbar)
 		sessionStorage.removeItem('token')
+		navigate("/");
 		window.location.reload(false);
 	}
 	return (

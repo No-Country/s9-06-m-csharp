@@ -1,16 +1,14 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { Home, Login, Register, Preferences, Swipe } from './Views'
 import Conversations from './Components/Chat/conversations/conversations'
-import Chat from './Components/Chat/Chat';
+// import Chat from './Components/Chat/Chat';
 import { useEffect, useState } from "react";
 import Notification from './Components/PushNotification/Notification';
 
 function App() {
-	const [token, setToken] = useState(null);
+	const [token, setToken] = useState(JSON.parse(sessionStorage.getItem("token")) || "");
 	useEffect(() => {
-		const token = sessionStorage.getItem("token");
-
-		setToken(JSON.parse(token));
+		setToken(token);
 	}, [token]);
 
 	return (

@@ -40,8 +40,9 @@ const Login = () => {
             theme: "light",
           }
         );
-        navigate("/swipe");
         sessionStorage.setItem("token", JSON.stringify(response.data.token));
+        navigate("/swipe");
+        window.location.reload(false);
       };
 
     } catch (error) {
