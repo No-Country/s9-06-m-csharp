@@ -17,6 +17,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddHttpsRedirection(opt => opt.HttpsPort = 443);
 
+builder.Services.AddCors();
+
 builder.Services.AddControllersWithViews();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -65,6 +67,7 @@ options.SignIn.RequireConfirmedEmail = false)
 builder.Services.AddScoped<IUserProfileRepository, UserProfileRepository>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
 builder.Services.AddScoped<IMatchRepository, MatchRepository>();
+builder.Services.AddScoped<IPhotoRepository, PhotoRepository>();
 //builder.Services.AddScoped<IProfileRespository, ProfileRespository>();
 // puede ser pa?! puede ser?!
 //builder.Services.Configure<IdentityOptions>(
@@ -98,6 +101,12 @@ app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+app.UseCors(options => options
+.WithOrigins(new[] {"http://localhost:3000", "http://localhost:5173", "https://buddyup-1860f.web.app/" } )
+.AllowAnyHeader()
+.AllowAnyMethod()
+.AllowCredentials());
 
 app.UseAuthentication();
 

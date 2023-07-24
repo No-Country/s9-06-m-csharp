@@ -294,19 +294,36 @@ namespace buddyUp.Data
             }
             return table;            
         }
-        //public string[] GetTagsOfUser(int profileId)
-        //{
-        //    using (var connection = new NpgsqlConnection(_config["PostgreSql:ConnectionString"]))
-        //    {
-        //        foreach (var theTag in tags)
-        //        {
-        //            cambiosEnProfileTag += connection.Execute(
-        //                procedureName,
-        //                new { tagid = theTag.id, profileid = profile.Id },
-        //                commandType: CommandType.StoredProcedure);
-        //        }
-        //    }
-        //}
+
+        public ProfileSimple? GetById(int id)
+        {
+            ProfileSimple? profile = new();
+            using (var connection = new NpgsqlConnection(_config["PostgreSql:ConnectionString"]))
+            {
+                profile = connection.Query<ProfileSimple>(
+                       "public.get_profile_simple_by_identifier",
+                       new { identifier = id },
+                       commandType: CommandType.StoredProcedure).FirstOrDefault();
+            }
+            if (profile is not null){
+                profile.tags = GetTagsOfUser(id).ToList();
+                return profile;
+            }
+            return null;
+        }
+        public IEnumerable<Tag> GetTagsOfUser(int profileId)
+        {
+            IEnumerable<Tag> tags = new List<Tag>();
+            using (var connection = new NpgsqlConnection(_config["PostgreSql:ConnectionString"]))
+            {
+
+                 tags = connection.Query<Tag>(
+                        "public.get_tags_of_user",
+                        new { profile_id = profileId},
+                        commandType: CommandType.StoredProcedure);                
+            }
+            return tags;
+        }
         //public User SetProfile(User user)
         //{
         //    var user = _users.Find(u => u.Id == ObjectId.Parse(id).ToString()).FirstOrDefault();

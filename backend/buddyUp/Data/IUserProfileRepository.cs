@@ -10,6 +10,8 @@ namespace buddyUp.Data
     {
         IdentityUser? GetByEmail(string email);
         IdentityUser? GetById(string id);
+        ProfileSimple? GetById(int pid);
+        IEnumerable<Tag> GetTagsOfUser(int pid);
         Profile? GetProfileById(string userId);
         int SetBirthdayAndAge(string id, DateTime birthday);
         int SetName(string id, string name);

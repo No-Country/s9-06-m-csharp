@@ -8,8 +8,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
+using System.Data;
+using Dapper;
 using System.Net;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 
 namespace buddyUp.Controllers
 {
@@ -33,7 +37,57 @@ namespace buddyUp.Controllers
         }
 
 
-        //[Authorize]
+        [HttpPut]
+        [Route("get-by-id-or-email")]
+        public ActionResult<UserSimpleDto> GetByIdOrEmail([FromBody] OneStringDto dto)
+        {
+            try
+            {
+                var user = new UserSimpleDto();
+                using (var connection = new NpgsqlConnection(_configuration["PostgreSql:ConnectionString"]))
+                {
+                    user = connection.Query<UserSimpleDto>(
+                        "public.get_u_by_id_or_email",
+                        new { the_identifier = dto.description },
+                        commandType: CommandType.StoredProcedure).FirstOrDefault();
+                }
+
+                return user!;
+            }
+            catch (Exception _)
+            {
+                return new JsonResult(_.Data);
+            }
+        }
+        [HttpGet]
+        [Route("get-by-pid")]
+        public ActionResult<ProfileSimple> GetById([FromQuery] int? id)
+        {
+            try
+            {
+                if (id is null)
+                {
+                    var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
+                    if (userId is not null)
+                    {
+                        return _userRepository.GetById(_userRepository.GetProfileById(userId)!.Id)!;
+                    }
+                    else
+                    {
+                        return Unauthorized();
+                    }
+                }
+                else
+                {
+                    return _userRepository.GetById(id.Value)!;
+                }
+                
+            }
+            catch (Exception _)
+            {
+                return new JsonResult(_.Data);
+            }
+        }
         [HttpPut]
         [Authorize(AuthenticationSchemes = "Bearer")]
         [Route("b-day")]
@@ -328,6 +382,45 @@ namespace buddyUp.Controllers
                         return Ok(new Response
                         {
                             Message = $"The preferences for distance were added to the user",
+                            Status = "OK"
+                        });
+                    }
+                    else
+                    {
+                        return BadRequest(new Response
+                        {
+                            Message = $"Can't add the preferences",
+                            Status = "NOT OK"
+                        });
+                    }
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+            }
+            catch (Exception _)
+            {
+                return new JsonResult(_.Message);
+            }
+        }
+        [HttpPut]
+        [Route("pref-age")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        public ActionResult<Response> UpdatePrefAge([FromBody] PrefsDto dto)
+        {
+            try
+            {
+                var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
+
+                if (userId is not null)
+                {
+                    int cambiosPerifil = _userRepository.SetAgePreference(userId, dto.minimum, dto.maximum);
+                    if (cambiosPerifil == 1)
+                    {
+                        return Ok(new Response
+                        {
+                            Message = $"The preferences for age were added to the user",
                             Status = "OK"
                         });
                     }

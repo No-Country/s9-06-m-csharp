@@ -74,7 +74,9 @@ namespace buddyUp.Controllers
                         {
                             await _roleManager.CreateAsync(new IdentityRole(UserRoles.User));
                             await _userManager.AddToRoleAsync(user, UserRoles.User);
-                        }                    
+                        }
+                        _repository.SetName(_userManager.FindByEmailAsync(requestDto.Email).Result.Id, 
+                            requestDto.FullName);
                         var token = GenerateJwtToken(user);
                         return Ok(new AuthResult()
                         {

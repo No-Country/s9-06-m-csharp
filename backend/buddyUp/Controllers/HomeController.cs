@@ -57,7 +57,33 @@ namespace buddyUp.Controllers
 
             
         }
+        [HttpGet]
+        [Route("buddyup-curated-one")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        public async Task<IActionResult> OneRandomPosibleFriend()
+        {
+            var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
+            if (userId is not null)
+            {
+                var profile = _repository.GetProfileById(userId);
+                if (profile is not null)
+                {
+                    var profiles = _repository.GetSelectionOfProfiles(profile.Id);
+                    List<ProfileViewDto> profile_view = GetProfileView(profile, profiles);
+                    return Ok(profile_view);
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            else
+            {
+                return BadRequest();
+            }
 
+
+        }
         private List<ProfileViewDto> GetProfileView(Profile? profile, IEnumerable<ProfileIntermediateDto> profiles)
         {
             List<ProfileViewDto> profile_view = new List<ProfileViewDto>();
