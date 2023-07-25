@@ -22,9 +22,7 @@ const PerfilSwipe = () => {
 					<p className='text-gray-500'>Lima / San Isidro</p>
 				</div>
 				<div className='mt-4'>
-					{tagsArriba.map((tag, index) => (
-						<Tag key={index} text={tag} />
-					))}
+						<Tag />
 				</div>
 			</div>
 			<div className='bg-[#D7F854] border border-gray-400 rounded-xl p-4 m-4'>
@@ -72,9 +70,7 @@ const PerfilSwipe = () => {
 			<div className='bg-white border border-gray-400 rounded-xl p-4 mx-4 mt-4'>
 				<p className='font-bold'>Mis intereses</p>
 				<div className='mt-4'>
-					{interesesAbajo.map((interes, index) => (
-						<Tag key={index} text={interes} />
-					))}
+						<Tag/>
 				</div>
 			</div>
 			{/* Mostrar solo en dispositivos móviles */}
