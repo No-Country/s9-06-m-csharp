@@ -1,8 +1,8 @@
 {
 	"printWidth": 80,
 	"useTabs": true,
-	"semi": false,
 	"singleQuote": true,
+	"semi": true,
 	"jsxSingleQuote": true,
 	"arrowParens": "avoid"
 }
