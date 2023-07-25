@@ -11,6 +11,7 @@ function App() {
 	return (
 		<Routes>
 			<Route path='/' element={<Home />} />
+			<Route path='/nueva' element={<Home />} />
 			<Route path='/login' element={user ? <Swipe /> : <Login />} />
 			<Route
 				path='/conversations'
