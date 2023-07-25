@@ -5,7 +5,7 @@ import Chat from '../src/Components/Conversations/Chat/Chat'
 import { useContext } from 'react'
 import { AuthContext } from './Context/AuthContext'
 import Conversations from './Components/Chat/conversations/conversations'
-// import Chat from './Components/Chat/Chat';
+import Chat from './Components/Chat/Chat';
 import { useEffect, useState } from "react";
 import Notification from './Components/PushNotification/Notification';
 
