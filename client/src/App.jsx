@@ -14,7 +14,10 @@ function App() {
 	return (
 		<Routes>
 			<Route path='/' element={<Home />} />
-			<Route path='/login' element={token ? <Swipe /> : <Login />} />
+
+			<Route path='/nueva' element={<Home />} />
+			<Route path='/login' element={user ? <Swipe /> : <Login />} />
+
 			<Route
 				path='/conversations'
 				element={token ? <Conversations /> : <Login />}
