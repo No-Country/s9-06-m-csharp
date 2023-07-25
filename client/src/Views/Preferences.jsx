@@ -40,21 +40,17 @@ const categories = [
   { id: "cocina", src: `${categoryCocina}` },
   { id: "musica", src: `${categoryIdiomas}` },
   { id: "idioma", src: `${categoryMusica}` },
-  { id: "otro", src: `${categoryOtros}` },
+  { id: "otros", src: `${categoryOtros}` },
 ];
 
 const otherCategories = [
-  { id: "ciencia", label: "Ciencias" },
-  { id: "deporte", label: "Deporte" },
-  { id: "matematica", label: "Matemática" },
+  { id: "ciencias", label: "Ciencias" },
+  { id: "matematicas", label: "Matemáticas" },
   { id: "dieta", label: "Dieta" },
   { id: "anime", label: "Anime" },
   { id: "arte", label: "Arte" },
-  { id: "fotografia", label: "Fotografía" },
   { id: "tecnologia", label: "Tecnología" },
-  { id: "excursiones", label: "Excursiones" },
-  { id: "cafe", label: "Café" },
-  { id: "comida_mexicana", label: "Comida Mexicana" },
+  { id: "cine", label: "Cine" },
 ];
 
 function getSteps() {
@@ -145,7 +141,7 @@ const Preferences = () => {
           })
       }
     }
-    // console.log(position);
+
     if (activeStep == steps.length - 1) {
       const api = "https://buddyup.azurewebsites.net/api/account";
       const headerConfig = {
@@ -155,9 +151,36 @@ const Preferences = () => {
         }
       }
 
-      const arrayTags = data.preferences.map(preference => { return { id: uuidv4(), name: preference } });
-      console.log(arrayTags);
-      console.log(JSON.stringify(arrayTags))
+      const getTagId = (tag) => {
+        switch (tag) {
+          case "ciencias":
+            return 2
+          case "deporte":
+            return 4
+          case "dieta":
+            return 6
+          case "anime":
+            return 7
+          case "arte":
+            return 8
+          case "cocina":
+            return 12
+          case "idioma":
+            return 13
+          case "cine":
+            return 14
+          case "otros":
+            return 16
+          case "matematicas":
+            return 5
+          case "tecnologia":
+            return 10
+          case "musica":
+            return 11
+        }
+      }
+
+      const arrayTags = data.preferences.map(preference => { return { id: getTagId(preference), name: preference } });
 
       const requests = [
         axios.put(`${api}/name`, { description: data.name }, headerConfig),
@@ -182,13 +205,6 @@ const Preferences = () => {
         }).catch(err => {
           console.log(err);
         })
-
-      // fetch("https://jsonplaceholder.typicode.com/comments")
-      //   .then((data) => data.json())
-      //   .then((res) => {
-      //     console.log(res);
-      //     setActiveStep(activeStep + 1);
-      //   });
     } else {
       setActiveStep(activeStep + 1);
       setSkippedSteps(
