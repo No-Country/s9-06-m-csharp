@@ -44,6 +44,7 @@ const Register = () => {
       };
 
       navigate("/preferences");
+      window.location.reload(false);
     } catch (error) {
       toast.error(
         "¡Ocurrió un error! ",
