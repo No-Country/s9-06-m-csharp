@@ -65,7 +65,24 @@ namespace buddyUp.Data
                 return -1;
             }
 
-        }    
+        }
+        public ProfileSimple? GetByIdOrEmail(string identifier)
+        {
+            var user = new ProfileSimple();
+            using (var connection = new NpgsqlConnection(_config["PostgreSql:ConnectionString"]))
+            {
+                user = connection.Query<ProfileSimple>(
+                    "public.get_u_by_id_or_email",
+                    new { the_identifier = identifier },
+                    commandType: CommandType.StoredProcedure).FirstOrDefault();
+            }
+            if (user is not null)
+            {
+                user.tags = GetTagsOfUser(user.pid).ToList();
+                return user;
+            }
+            return null;
+        }
         public int SetName(string id, string name)
         {
             if (_context.Users.Any(u => u.Id == id))
@@ -283,16 +300,38 @@ namespace buddyUp.Data
                 table = connection.Query<ProfileIntermediateDto>(
                     procedureName, new
                     {
-                        age_minimum = profile.minimun_age,
-                        age_maximum = profile.maximun_age,
-                        distance_minimum = profile.minimun_distance,
-                        distance_maximum = profile.maximun_distance * 1000, // está en metros en la bd
+                        age_minimum = profile.minimun_age == 0 ? 18 : profile.minimun_age,
+                        age_maximum = profile.maximun_age == 0 ? 99 : profile.maximun_age,
+                        distance_minimum = profile.minimun_distance == 0 ? 1 : profile.minimun_distance * 1000,
+                        distance_maximum = profile.maximun_distance == 0 ? 50000000 : profile.maximun_distance * 1000,
                         current_profile = profile.Id
                     },
                     commandType: CommandType.StoredProcedure); ;
                     
             }
             return table;            
+        }
+        public IEnumerable<ProfileIntermediateDto> GetOnePosibleFriend(int id_perfil)
+        {
+            var procedureName = "public.get_one_posible_friend";
+            IEnumerable<ProfileIntermediateDto> table = new List<ProfileIntermediateDto>();
+            Profile? profile = _context.Profile.Where(p => p.Id == id_perfil).FirstOrDefault();
+            using (var connection = new NpgsqlConnection(_config["PostgreSql:ConnectionString"]))
+            {
+
+                table = connection.Query<ProfileIntermediateDto>(
+                    procedureName, new
+                    {
+                        age_minimum = profile.minimun_age == 0 ? 18 : profile.minimun_age,
+                        age_maximum = profile.maximun_age == 0 ? 99 : profile.maximun_age,
+                        distance_minimum = profile.minimun_distance == 0 ? 1 : profile.minimun_distance * 1000,
+                        distance_maximum = profile.maximun_distance == 0 ? 50000000 : profile.maximun_distance * 1000,
+                        current_profile = profile.Id
+                    },
+                    commandType: CommandType.StoredProcedure); ;
+
+            }
+            return table;
         }
 
         public ProfileSimple? GetById(int id)
@@ -307,6 +346,7 @@ namespace buddyUp.Data
             }
             if (profile is not null){
                 profile.tags = GetTagsOfUser(id).ToList();
+                profile.images = GetImagesOfUser(id).ToList();
                 return profile;
             }
             return null;
@@ -324,6 +364,21 @@ namespace buddyUp.Data
             }
             return tags;
         }
+        public IEnumerable<PhotoViewDto> GetImagesOfUser(int profileId)
+        {
+            IEnumerable<PhotoViewDto> photos = new List<PhotoViewDto>();
+            using (var connection = new NpgsqlConnection(_config["PostgreSql:ConnectionString"]))
+            {
+
+                photos = connection.Query<PhotoViewDto>(
+                       "public.get_images_of_user",
+                       new { identifier = profileId },
+                       commandType: CommandType.StoredProcedure);
+            }
+            return photos;
+        }
+
+
         //public User SetProfile(User user)
         //{
         //    var user = _users.Find(u => u.Id == ObjectId.Parse(id).ToString()).FirstOrDefault();
@@ -341,4 +396,4 @@ namespace buddyUp.Data
         //}
     }
 
-    }
+}

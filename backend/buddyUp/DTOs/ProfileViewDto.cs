@@ -10,6 +10,7 @@
         public int age { get; set; }
         public string gender { get; set; } = string.Empty;
         public int distance_in_km { get; set; }
-        public List<string> tags { get; set; } = null;
+        public List<string> tags { get; set; } = null!;
+        public List<PhotoViewDto> photos { get; set; } = null!;
     }
 }

@@ -1,4 +1,5 @@
-﻿using buddyUp.Models;
+﻿using buddyUp.DTOs;
+using buddyUp.Models;
 
 namespace buddyUp.Data
 {
@@ -45,9 +46,19 @@ namespace buddyUp.Data
         {
             return _context.Match.ToList();
         }
-        public IEnumerable<Match> GetAllMyMatches(int id)
+        public IEnumerable<MatchOutDto> GetAllMyMatches(int id)
         {
-            return _context.Match.Where(m => m.isMatch == true && (m.userp1_id == id || m.userp2_id == id));
+            var rawMatches = _context.Match.Where(m => m.isMatch == true && (m.userp1_id == id || m.userp2_id == id));
+            List<MatchOutDto> procesedMatches = new List<MatchOutDto>();
+            foreach(var rawMatch in rawMatches)
+            {
+                procesedMatches.Add(new MatchOutDto
+                {
+                    id = rawMatch.id,
+                    matchedUserPid = rawMatch.userp1_id == id ? rawMatch.userp2_id : rawMatch.userp1_id 
+                });
+            }
+            return procesedMatches;
         }
         public Match? GetById(int id)
         {
@@ -56,7 +67,8 @@ namespace buddyUp.Data
 
         public Match? GetByUsersId(int user1_id, int user2_id)
         {           
-            return _context.Match.Where(m => (m.userp1_id == user1_id || m.userp2_id == user1_id) || (m.userp1_id == user2_id || m.userp2_id == user2_id)).FirstOrDefault();
+            var match = _context.Match.Where(m => (m.userp1_id == user1_id || m.userp2_id == user1_id) && (m.userp1_id == user2_id || m.userp2_id == user2_id)).FirstOrDefault();
+            return match;
         }
 
         public int Update(int id, Match match)
@@ -87,10 +99,10 @@ namespace buddyUp.Data
             }
             else
             {
-                if(_context.Match.Any(m => m.userp1_id == likedBy || m.userp1_id == liked))//es el mismo userp1_id, porque no se sabe el orden pero así aseguramos
-                {
-                    return 3;
-                }
+                //if(_context.Match.Any(m => m.userp1_id == likedBy || m.userp1_id == liked))//es el mismo userp1_id, porque no se sabe el orden pero así aseguramos
+                //{
+                //    return 3;
+                //}
                 match = new()
                 {
                     isMatch = false,

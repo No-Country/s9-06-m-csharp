@@ -2,6 +2,6 @@
 {
     public class TagNameDto
     {
-        public string pname { get; set; } = string.Empty;
+        public string name { get; set; } = string.Empty;
     }
 }

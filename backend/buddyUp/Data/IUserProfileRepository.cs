@@ -11,6 +11,7 @@ namespace buddyUp.Data
         IdentityUser? GetByEmail(string email);
         IdentityUser? GetById(string id);
         ProfileSimple? GetById(int pid);
+        ProfileSimple? GetByIdOrEmail(string identifier);
         IEnumerable<Tag> GetTagsOfUser(int pid);
         Profile? GetProfileById(string userId);
         int SetBirthdayAndAge(string id, DateTime birthday);
@@ -23,5 +24,9 @@ namespace buddyUp.Data
         int SetAgePreference(string id, int min, int max);
         int SetDistancePreference(string id, int min, int max);
         IEnumerable<ProfileIntermediateDto> GetSelectionOfProfiles(int id_perfil);
+        IEnumerable<ProfileIntermediateDto> GetOnePosibleFriend(int id_perfil);
+        IEnumerable<PhotoViewDto> GetImagesOfUser(int profileId);
+
+
     }
 }

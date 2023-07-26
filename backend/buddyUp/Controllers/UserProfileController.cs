@@ -37,23 +37,25 @@ namespace buddyUp.Controllers
         }
 
 
-        [HttpPut]
+        [HttpPost]
         [Route("get-by-id-or-email")]
-        public ActionResult<UserSimpleDto> GetByIdOrEmail([FromBody] OneStringDto dto)
+        //[AlloAnonymous]
+        public ActionResult<ProfileSimple> GetByIdOrEmail([FromBody] OneStringDto dto)
         {
             try
             {
-                var user = new UserSimpleDto();
-                using (var connection = new NpgsqlConnection(_configuration["PostgreSql:ConnectionString"]))
+                if (dto.description is not null)
                 {
-                    user = connection.Query<UserSimpleDto>(
-                        "public.get_u_by_id_or_email",
-                        new { the_identifier = dto.description },
-                        commandType: CommandType.StoredProcedure).FirstOrDefault();
+                    return _userRepository.GetByIdOrEmail(dto.description)!;
                 }
-
-                return user!;
-            }
+                else
+                {
+                    return BadRequest(new JsonResult(new
+                    {
+                        message = "The description was null"
+                    }));
+                }
+            }        
             catch (Exception _)
             {
                 return new JsonResult(_.Data);
@@ -90,7 +92,7 @@ namespace buddyUp.Controllers
         }
         [HttpPut]
         [Authorize(AuthenticationSchemes = "Bearer")]
-        [Route("b-day")]
+        [Route("bday")]
         public ActionResult<Response> UpdateBirthday([FromBody] BirthdayDto dto)
         {
             try

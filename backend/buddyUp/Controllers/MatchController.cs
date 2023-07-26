@@ -105,6 +105,5 @@ namespace buddyUp.Controllers
             return Ok(_rep.GetAllMyMatches(profile.Id));
         }
 
-        // obtener todos los matches para los chats pero después
     }
 }

@@ -68,7 +68,7 @@ namespace buddyUp.Controllers
                 var profile = _repository.GetProfileById(userId);
                 if (profile is not null)
                 {
-                    var profiles = _repository.GetSelectionOfProfiles(profile.Id);
+                    var profiles = _repository.GetOnePosibleFriend(profile.Id);
                     List<ProfileViewDto> profile_view = GetProfileView(profile, profiles);
                     return Ok(profile_view);
                 }
@@ -102,6 +102,7 @@ namespace buddyUp.Controllers
                     gender = intermediateP.pgender,
                     name = intermediateP.pname,
                     tags = GetTagsOfProfile(intermediateP.pid),
+                    photos = _repository.GetImagesOfUser(intermediateP.pid).ToList(),
                     distance_in_km = (int) (intermediateP.pdistance / 1000 == 0 ? 1 : intermediateP.pdistance / 1000)
                 };
                 profile_view.Add(new_p_view);
@@ -126,7 +127,7 @@ namespace buddyUp.Controllers
             List<string> s_tags_of_user = new List<string>();
             foreach(var tag in tags_name)
             {
-                s_tags_of_user.Add(tag.pname);
+                s_tags_of_user.Add(tag.name);
             }            
             return s_tags_of_user;
         }

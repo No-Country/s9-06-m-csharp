@@ -1,4 +1,5 @@
-﻿using buddyUp.Models;
+﻿using buddyUp.DTOs;
+using buddyUp.Models;
 
 namespace buddyUp.Data
 {
@@ -11,6 +12,6 @@ namespace buddyUp.Data
         int Update(int id, Match match);
         int Delete(int? id);
         int LikeOrMutualLike(int likedBy, int liked);
-        IEnumerable<Match> GetAllMyMatches(int id);
+        IEnumerable<MatchOutDto> GetAllMyMatches(int id);
     }
 }

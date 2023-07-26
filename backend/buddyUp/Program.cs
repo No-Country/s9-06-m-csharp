@@ -68,6 +68,7 @@ builder.Services.AddScoped<IUserProfileRepository, UserProfileRepository>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
 builder.Services.AddScoped<IMatchRepository, MatchRepository>();
 builder.Services.AddScoped<IPhotoRepository, PhotoRepository>();
+builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 //builder.Services.AddScoped<IProfileRespository, ProfileRespository>();
 // puede ser pa?! puede ser?!
 //builder.Services.Configure<IdentityOptions>(
@@ -103,7 +104,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseCors(options => options
-.WithOrigins(new[] {"http://localhost:3000", "http://localhost:5173", "https://buddyup-1860f.web.app/" } )
+.WithOrigins(new[] {"http://localhost:3000", "http://localhost:5173", "http://127.0.0.1:5173", "https://buddyup-1860f.web.app/" } )
 .AllowAnyHeader()
 .AllowAnyMethod()
 .AllowCredentials());
