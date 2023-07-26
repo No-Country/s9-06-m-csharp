@@ -22,6 +22,10 @@ function App() {
 				path='/conversations'
 				element={token ? <Conversations /> : <Login />}
 			/>
+				<Route
+				path='/chat/:id'
+				element={token ? <Chat /> : <Login />}
+			/>
 			<Route path='/register' element={token ? <Swipe /> : <Register />} />
 			<Route path='/preferences' element={token ? <Preferences /> : <Login />} />
 			<Route path='/swipe' element={token ? <Swipe /> : <Login />} />
