@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+/*import React, { useEffect, useState } from 'react';
 
 const Tag = () => {
   const [data, setData] = useState(null);
@@ -33,4 +33,4 @@ const Tag = () => {
   );
 };
 
-export default Tag;
+export default Tag;*/
