@@ -9,13 +9,13 @@ import Carrusel from '../Carrusel/Carrusel.jsx'
 //import Tag from '../Tag/Tag.jsx';
 import MatchButtons from '../MatchButtons/MatchButtons.jsx'
 
-const PerfilSwipe = () => {
+const PerfilSwipe = ({ id }) => {
 	const [userData, setUserData] = useState(null)
 	const [loading, setLoading] = useState(true)
 	const [error, setError] = useState(null)
 
 	useEffect(() => {
-		fetch('https://buddyup.azurewebsites.net/api/account/get-by-pid?id=1')
+		fetch(`https://buddyup.azurewebsites.net/api/account/get-by-pid?id=${id}`)
 			.then(response => {
 				if (!response.ok) {
 					throw new Error('Network response was not ok')
@@ -43,7 +43,7 @@ const PerfilSwipe = () => {
 	return (
 		<>
 			{userData && (
-				<>
+				<div className='flex flex-col w-full'>
 					<div className='bg-white border border-gray-400 rounded-xl p-4 m-4'>
 						<div className='flex items-start'>
 							<h1 className='text-xl font-bold'>{userData.pname}</h1>
@@ -100,7 +100,7 @@ const PerfilSwipe = () => {
 					<div className='sticky bottom-3 bg-white hidden md:block'>
 						<MatchButtons />
 					</div>
-				</>
+				</div>
 			)}
 		</>
 	)
