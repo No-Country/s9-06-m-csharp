@@ -1,65 +1,63 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { RiShieldUserLine } from 'react-icons/ri';
-import imgTest from '../../images/imageTest.jpg';
+import imgTest from '../../images/userIcon.png';
 import imgBU1 from '../../images/imgConversationsBuddyUp1.png'
 import imgBU2 from '../../images/img2BuddyUpConversations.png'
 import imgBU3 from '../../images/img3BuddyUpConversations.png'
 import imgBU4 from '../../images/img4BuddyUpConversations.png'
 import axios from 'axios';
 const Conversations = () => {
+const [conversations,setConversations]=useState([])
   useEffect(() => {
-    const getIDMatches = async () => {
-      try {
-        const endpoint = "https://buddyup.azurewebsites.net/api/match/my-matches";
-        const token = sessionStorage.getItem('token');
-        const tokenWithoutQuotes = token.replace(/^"(.*)"$/, '$1');
-        console.log(tokenWithoutQuotes);
+  const getIDMatches = async () => {
+    try {
+      const endpoint = "https://buddyup.azurewebsites.net/api/match/my-matches";
+      const token = sessionStorage.getItem('token');
+      const tokenWithoutQuotes = token.replace(/^"(.*)"$/, '$1');
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${tokenWithoutQuotes}`
+        }
+      };
 
-        const config = {
-          headers: {
-            'Authorization': `Bearer ${tokenWithoutQuotes}`
-          }
-        };
+      const response = await axios.get(endpoint, config);
+      const ids = response.data;
 
-        const req = await axios.get(endpoint, config);
-        console.log(req)
+      // Utilizar map para crear un array de promesas
+      const userPromises = ids.map(async (id) => {
 
-      } catch (error) {
-        console.error('Error al hacer la solicitud:', error);
-        setError('Ocurrió un error al obtener las coincidencias.');
-      }
-    };
+        try {
+          // Hacer la solicitud utilizando el ID en el endpoint deseado
+          const userEndpoint = `https://buddyup.azurewebsites.net/api/account/get-by-pid?id=${id.matchedUserPid}`;
+          const userConfig = {
+            headers: {
+              'Authorization': `Bearer ${tokenWithoutQuotes}`
+            }
+          };
 
-    getIDMatches();
-  }, []);
+          const userResponse = await axios.get(userEndpoint, userConfig);
+          return userResponse.data; // Devolver los datos del usuario para el ID actual
+        } catch (error) {
+          console.error('Error al obtener los datos del usuario:', error);
+          throw error;
+        }
+      });
+
+      // Utilizar Promise.all para obtener todos los resultados de las solicitudes en paralelo
+      const userDataArray = await Promise.all(userPromises);
+	setConversations(userDataArray)
+
+    //   conversations.push(userDataArray);
+	//   console.log(conversations)
+    } catch (error) {
+      console.error('Error al hacer la solicitud:', error);
+    }
+  };
+  getIDMatches();
+}, []);
+console.log(conversations)
   
-	const conversations = [
-		{
-			name: 'Maria Fernanda',
-			img: imgTest,
-			lastMessage: 'Hola como estas?',
-		},
-		{
-			name: 'Raul Agustin',
-			img: imgTest,
-			lastMessage: 'weeenas bb',
-		},
-		{
-			name: 'Sebastian Escobar',
-			img: imgTest,
-			lastMessage: 'Hola como estas?',
-		},
-		{
-			name: 'Debora Meltrozo',
-			img: imgTest,
-			lastMessage: 'Tienes razon',
-		},
-		{
-			name: 'Jose Jose',
-			img: imgTest,
-			lastMessage: 'jajja tienes razon',
-		},
-	];
+	
 const AmistadesNuevas=[
   {name:'Fernanda', img:imgBU1},
 {name:'Miley' ,img:imgBU2},
@@ -102,11 +100,11 @@ const AmistadesNuevas=[
 					{conversations.map((conversation, index) => (
 						<div key={index} className='flex items-center mt-2'>
 							<img
-								src={conversation.img}
+								src={imgTest}
 								alt='la imagen del usuario'
-								className='w-10 h-10 rounded-full mr-4'
+								className='w-6 h-6 rounded-full mr-4'
 							/>
-							<h2 className='text-left mt-2 font-bold'>{conversation.name}</h2>
+							<h2 className='text-left mt-2 font-bold'>{conversation.pname}</h2>
 						</div>
 					))}
 				</div>
