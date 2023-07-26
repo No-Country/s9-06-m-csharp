@@ -25,7 +25,7 @@ const Register = () => {
         }
       });
 
-      sessionStorage.setItem("token", JSON.stringify(response.data.token));
+      sessionStorage.setItem("token", response.data.token);
 
       if (response.status === 200) {
         toast.success(
