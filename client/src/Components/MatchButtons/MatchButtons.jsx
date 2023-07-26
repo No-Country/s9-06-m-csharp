@@ -4,7 +4,7 @@ import BtnX from '../BtnX/BtnX.jsx';
 import BtnStar from '../BtnStar/BtnStar.jsx';
 import BtnBack from '../BtnBack/BtnBack.jsx';
 
-const MatchButtons = ({ handleNextUser, handlePreviousUser }) => {
+const MatchButtons = ({ handleNextUser, handlePreviousUser, id }) => {
   const isMobile = useMediaQuery({ maxWidth: 767 });
 
   const spaceClass = isMobile ? 'space-x-6' : 'space-x-20';
@@ -13,7 +13,7 @@ const MatchButtons = ({ handleNextUser, handlePreviousUser }) => {
     <div className={`flex justify-center ${spaceClass} mx-6 pt-3`}>
       <BtnBack handlePreviousUser={handlePreviousUser} />
       <BtnX handleNextUser={handleNextUser} />
-      <BtnStar />
+      <BtnStar id={id} handleNextUser={handleNextUser} />
     </div>
   );
 };
