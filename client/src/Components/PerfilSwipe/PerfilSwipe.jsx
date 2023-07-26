@@ -9,7 +9,7 @@ import Carrusel from '../Carrusel/Carrusel.jsx'
 //import Tag from '../Tag/Tag.jsx';
 import MatchButtons from '../MatchButtons/MatchButtons.jsx'
 
-const PerfilSwipe = () => {
+const PerfilSwipe = ({ id }) => {
 	const [userData, setUserData] = useState(null)
 	const [loading, setLoading] = useState(true)
 	const [error, setError] = useState(null)

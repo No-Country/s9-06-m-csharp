@@ -1,10 +1,12 @@
 import React, { useState } from 'react'
+import { useMediaQuery } from 'react-responsive'
 import MenuTop from '../Components/MenuTop/MenuTop'
 import PerfilSwipe from '../Components/PerfilSwipe/PerfilSwipe'
 import MenuBtm from '../Components/MenuBtm/MenuBtm'
 import axios from "axios"
 
 const Swipe = () => {
+  const isMobile = useMediaQuery({ maxWidth: 767 })
   const [user, setUser] = useState([]);
 
   const getUsers = async () => {
