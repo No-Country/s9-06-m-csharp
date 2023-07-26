@@ -24,7 +24,7 @@ module.exports = {
 				nunito: ['Nunito', 'sans-serif'],
 				nunitosans: ['Nunito Sans', 'sans-serif'],
 				opensans: ["Open Sans", "sans-serif"],
-			},
+			}
 		},
 	},
 
