@@ -1,6 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { Home, Login, Register, Preferences, Swipe } from './Views'
-import Conversations from './Components/Chat/conversations/conversations'
+import Conversations from './Components/Conversations/Conversations'
 import Chat from './Components/Conversations/Chat/Chat';
 import { useEffect, useState } from "react";
 import Notification from './Components/PushNotification/Notification';
@@ -20,7 +20,7 @@ function App() {
 
 			<Route
 				path='/conversations'
-				element={token ? <Chat /> : <Login />}
+				element={token ? <Conversations /> : <Login />}
 			/>
 			<Route path='/register' element={token ? <Swipe /> : <Register />} />
 			<Route path='/preferences' element={token ? <Preferences /> : <Login />} />
