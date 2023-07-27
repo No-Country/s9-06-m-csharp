@@ -66,8 +66,8 @@ const Conversations = () => {
 		{ name: 'Daniela', img: imgBU4 },
 	]
 	return (
-		<div className='container mx-auto px-4'>
-			<div className='flex justify-between mt-2'>
+		<div className='container mx-auto px-4 bg-slate-100 h-100'>
+			<div className='flex justify-between p-2'>
 				<div>
 					<h1>BuddyUp</h1>
 				</div>
@@ -84,7 +84,7 @@ const Conversations = () => {
 					placeholder='buscar nombre'
 				/>
 				<h2 className='text-left mt-2 font-bold'>Amistades nuevas</h2>
-				<div className='flex justify-around mt-2'>
+				<div className='flex justify-around gap-2 mt-2'>
 					{AmistadesNuevas.map((item, index) => (
 						<div key={index}>
 							<img src={item.img} alt='' />
@@ -113,7 +113,7 @@ const Conversations = () => {
 					))}
 				</div>
 			</div>
-			<div className='flex justify-center items-center mt-32'>
+			<div className='flex justify-center items-center mt-[10rem]'>
 			<MenuBtm/>
 			</div>
 			
