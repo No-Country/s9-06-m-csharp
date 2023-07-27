@@ -74,7 +74,7 @@ const Chat = () => {
     e.preventDefault();
     if (message.trim() !== '') {
 	
-      socket.emit('message', { fromUserId: 'user 1', message }); // Cambia 'user 1' por el ID del usuario actual
+      socket.emit('message', { fromUserId: id, message }); // Cambia 'user 1' por el ID del usuario actual
       setMessage('');
     }
   };
@@ -110,7 +110,7 @@ const SaveMessageInDB = async()=>{
             <li
               key={index}
               className={`my-2 p-2 text-sm rounded-md table ${
-                msj.user === "user 1" ? "bg-sky-700 ml-auto" : "bg-black"
+                msj.user === id ? "bg-sky-700 ml-auto" : "bg-black"
               }`}
             >
               <p>
