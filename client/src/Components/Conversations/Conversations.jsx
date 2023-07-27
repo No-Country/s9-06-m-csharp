@@ -104,7 +104,7 @@ const Conversations = () => {
 							className='flex items-center mt-2 mb-2'
 						>
 							<img
-								src={conversation.images[0].image_url}
+								src={conversation.images[0]?.image_url}
 								alt='la imagen del usuario'
 								className='w-12 h-12 rounded-full mr-4'
 							/>
