@@ -34,7 +34,6 @@ const Swipe = () => {
         }
       </div>
 
-
       id={user.id}
   getUsers();*/
 
