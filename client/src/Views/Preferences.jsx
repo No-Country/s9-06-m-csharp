@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Stepper,
   Step,
@@ -33,27 +33,24 @@ import ellipse1 from "../images/ellipse-1.png";
 import ellipse2 from "../images/ellipse-2.png";
 import ellipse3 from "../images/ellipse-3.png";
 import { useNavigate } from "react-router";
+import axios from "axios";
 
 const categories = [
   { id: "deporte", src: `${categoryDeporte}` },
   { id: "cocina", src: `${categoryCocina}` },
   { id: "musica", src: `${categoryIdiomas}` },
   { id: "idioma", src: `${categoryMusica}` },
-  { id: "otro", src: `${categoryOtros}` },
+  { id: "otros", src: `${categoryOtros}` },
 ];
 
 const otherCategories = [
-  { id: "ciencia", label: "Ciencias" },
-  { id: "deporte", label: "Deporte" },
-  { id: "matematica", label: "Matemática" },
+  { id: "ciencias", label: "Ciencias" },
+  { id: "matematicas", label: "Matemáticas" },
   { id: "dieta", label: "Dieta" },
   { id: "anime", label: "Anime" },
   { id: "arte", label: "Arte" },
-  { id: "fotografia", label: "Fotografía" },
   { id: "tecnologia", label: "Tecnología" },
-  { id: "excursiones", label: "Excursiones" },
-  { id: "cafe", label: "Café" },
-  { id: "comida_mexicana", label: "Comida Mexicana" },
+  { id: "cine", label: "Cine" },
 ];
 
 function getSteps() {
@@ -70,6 +67,7 @@ function getSteps() {
 }
 
 const Preferences = () => {
+  const [token, setToken] = useState("");
   const { methods, register, handleSubmit, formState: { errors } } = useForm();
   const [data, setData] = useState({
     name: "",
@@ -90,6 +88,10 @@ const Preferences = () => {
   const [images, setImages] = useState([]);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    setToken(sessionStorage.getItem("token"));
+  }, [token]);
 
   const steps = getSteps();
 
@@ -125,28 +127,84 @@ const Preferences = () => {
     return skippedSteps.includes(step);
   };
 
-  const handleNext = () => {
-    console.log(data);
-    console.log("files: ", files);
-    console.log("images: ", images);
+  const handleNext = async () => {
+    // console.log(data);
+    // console.log("files: ", files);
+    // console.log("images: ", images);
     if (activeStep == 6) {
       // si el navegador soporta geolocalizacion
       if (navigator.geolocation) {
         // pedimos los datos de geolocalizacion al navegador
         navigator.geolocation.getCurrentPosition(
           function (positionUser) {
-            setPosition({ latitude: positionUser.coords.latitude, longitude: positionUser.coords.longitude })
+            setPosition({ Latitude: positionUser.coords.latitude, Longitude: positionUser.coords.longitude })
           })
       }
     }
-    console.log(position);
+
     if (activeStep == steps.length - 1) {
-      fetch("https://jsonplaceholder.typicode.com/comments")
-        .then((data) => data.json())
-        .then((res) => {
-          console.log(res);
+      const api = "https://buddyup.azurewebsites.net/api/account";
+      const headerConfig = {
+        headers: {
+          "Authorization": "Bearer " + JSON.parse(token),
+          "Content-Type": "application/json",
+        }
+      }
+
+      const getTagId = (tag) => {
+        switch (tag) {
+          case "ciencias":
+            return 2
+          case "deporte":
+            return 4
+          case "dieta":
+            return 6
+          case "anime":
+            return 7
+          case "arte":
+            return 8
+          case "cocina":
+            return 12
+          case "idioma":
+            return 13
+          case "cine":
+            return 14
+          case "otros":
+            return 16
+          case "matematicas":
+            return 5
+          case "tecnologia":
+            return 10
+          case "musica":
+            return 11
+        }
+      }
+
+      const arrayTags = data.preferences.map(preference => { return { id: getTagId(preference), name: preference } });
+
+      const requests = [
+        axios.put(`${api}/name`, { description: data.name }, headerConfig),
+        axios.put(`${api}/b-day`, { birthday: data.date }, headerConfig),
+        axios.put(`${api}/gender`, { description: data.genero }, headerConfig),
+        axios.put(`${api}/tag`, JSON.stringify(arrayTags), headerConfig),
+        axios.put(`${api}/quote`, { description: data.detailPreferences }, headerConfig),
+        axios.put(`${api}/pref-distance`, JSON.stringify({
+          minimum: 1,
+          maximum: Number(data.distancePreference)
+        }), headerConfig),
+        axios.put(`${api}/location`, position, headerConfig)
+      ]
+
+      Promise.all([
+        requests
+      ])
+        .then(responses => {
+          console.log(responses);
           setActiveStep(activeStep + 1);
-        });
+          return values
+        }).catch(err => {
+          console.log(err);
+        })
     } else {
       setActiveStep(activeStep + 1);
       setSkippedSteps(
@@ -169,7 +227,7 @@ const Preferences = () => {
   async function uploadimg(e) {
     const file = e.target.files[0];
     if (file) {
-      console.log("e---image", files, images);
+      // console.log("e---image", files, images);
 
       setImages([...images, (await readFileAsync(file))]);
       setFiles([...files, file]);

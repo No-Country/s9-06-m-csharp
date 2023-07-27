@@ -1,113 +1,128 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react';
 import {
 	FaMapMarkerAlt,
 	FaQuoteRight,
 	FaMars,
 	FaBirthdayCake,
-} from 'react-icons/fa'
-import Tag from '../Tag/Tag.jsx'
-import MatchButtons from '../MatchButtons/MatchButtons.jsx'
+} from 'react-icons/fa';
+import Carrusel from '../Carrusel/Carrusel.jsx';
+import MatchButtons from '../MatchButtons/MatchButtons.jsx';
+import axios from 'axios';
 
 const PerfilSwipe = () => {
-	const tagsArriba = [
-		'Aprender a cocinar',
-		'Recetas',
-		'Repostería',
-		'Fotografía',
-		'Salir a correr',
-		'♂ 22',
-	]
-	const interesesAbajo = [
-		'Aprender a cocinar',
-		'Recetas',
-		'Repostería',
-		'Fotografía',
-		'Ir al cine',
-		'Salir a correr',
-		'Tecnología',
-		'Ciencia ficción',
-	]
+	const [usersData, setUsersData] = useState([]);
+	const [currentIndex, setCurrentIndex] = useState(0);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState(null);
+
+	useEffect(() => {
+		getUsers();
+	}, []);
+
+	const getUsers = async () => {
+		const api = "https://buddyup.azurewebsites.net/buddyup-curated";
+		const headerConfig = {
+			headers: {
+				"Authorization": "Bearer " + JSON.parse(sessionStorage.getItem("token")),
+				"Content-Type": "application/json",
+			}
+		};
+
+		try {
+			const response = await axios.get(api, headerConfig);
+			const data = response.data;
+			setUsersData(data);
+			setLoading(false);
+		} catch (error) {
+			setError(error);
+			setLoading(false);
+		}
+	};
+
+	const handleNextUser = () => {
+		setCurrentIndex(prevIndex => (prevIndex + 1) % usersData.length);
+	};
+
+	const handlePreviousUser = () => {
+		setCurrentIndex(prevIndex => {
+			if (prevIndex === 0) {
+				return prevIndex;
+			}
+			return prevIndex - 1;
+		});
+	};
+
+	if (loading) {
+		return <div className='text-center min-h-screen'>Loading...</div>;
+	}
+
+	if (error) {
+		return <div>Error: {error.message}</div>;
+	}
+
+	const currentUser = usersData[currentIndex];
 
 	return (
 		<>
-			<div className='bg-white border border-gray-400 rounded-xl p-4 m-4'>
-				<div className='flex items-start'>
-					<h1 className='text-xl font-bold'>Carlos Fernández</h1>
-				</div>
-				<div className='flex items-start mt-2'>
-					<FaMapMarkerAlt className='w-5 h-5 text-gray-500 mr-1' />
-					<p className='text-gray-500'>Lima / San Isidro</p>
-				</div>
-				<div className='mt-4'>
-					{tagsArriba.map((tag, index) => (
-						<Tag key={index} text={tag} />
-					))}
-				</div>
-			</div>
-			<div className='bg-[#D7F854] border border-gray-400 rounded-xl p-4 m-4'>
-				<FaQuoteRight />
-				<div className='flex items-start'>
-					<p>
-						Quiero hacer amigos que me enseñen nuevas formas de crear comida
-						saludable
-					</p>
-				</div>
-			</div>
-			<div className='bg-white border border-gray-400 rounded-xl p-4 m-4'>
-				<p className='pb-3 font-bold'>Mi descripción</p>
-				<div className='flex items-start'>
-					<p>
-						Lorem ipsum dolor sit amet consectetur, adipisicing elit. Animi
-						labore atque incidunt minima? Illum, maxime praesentium! Laboriosam
-						sunt deserunt deleniti doloremque distinctio eum dolore sint vero,
-						sed perspiciatis aspernatur! Culpa?
-					</p>
-				</div>
-			</div>
-			<div className='bg-white border border-gray-400 rounded-xl p-4 mx-4 mt-4'>
-				<p className='font-bold'>Lo esencial</p>
-				<div className='mt-4'>
-					<Tag
-						text={
+			{currentUser && (
+				<div className='flex flex-col w-full'>
+					<div className='bg-white border border-gray-400 rounded-xl p-4 m-4'>
+						<div className='flex items-start'>
+							<h1 className='text-xl font-bold'>{currentUser.name}</h1>
+						</div>
+						<div className='flex items-start mt-2'>
+							<FaMapMarkerAlt className='w-5 h-5 text-gray-500 mr-1' />
+							<p className='text-gray-500'>{currentUser.location}</p>
+						</div>
+					</div>
+					<div className='bg-[#D7F854] border border-gray-400 rounded-xl p-4 m-4'>
+						<FaQuoteRight />
+						<div className='flex items-start'>
+							<p>{currentUser.quote}</p>
+						</div>
+					</div>
+					<div className='bg-white border border-gray-400 rounded-xl p-4 m-4'>
+						<p className='pb-3 font-bold'>Mi descripción</p>
+						<div className='flex items-start'>
+							<p>{currentUser.bio}</p>
+						</div>
+					</div>
+					<div className='bg-white border border-gray-400 rounded-xl p-4 mx-4 mt-4'>
+						<p className='font-bold'>Lo esencial</p>
+						<div className='mt-4'>
 							<div className='flex items-center'>
 								<FaMars className='w-5 h-5 text-gray-500 mr-1' />
-								Hombre
+								{currentUser.gender}
 							</div>
-						}
-					/>
-					<Tag
-						text={
 							<div className='flex items-center'>
 								<FaBirthdayCake className='w-5 h-5 text-gray-500 mr-1' />
-								22
+								{currentUser.age}
 							</div>
-						}
-					/>
+						</div>
+					</div>
+					<Carrusel />
+					<div className='bg-white border border-gray-400 rounded-xl p-4 mx-4 mt-4'>
+						<p className='font-bold'>Mis intereses</p>
+						<div className='mt-4 flex flex-wrap'>
+							{currentUser.tags.map((tag, index) => (
+								<div key={index} className='px-2 py-1 bg-gray-200 rounded-full inline-block text-sm mr-2 mb-2'>
+									{tag}
+								</div>
+							))}
+						</div>
+					</div>
+					{/* Mostrar solo en dispositivos móviles */}
+					<div className='mt-1 flex flex-col items-center justify-center sticky bottom-20 bg-white md:hidden'>
+						<MatchButtons handleNextUser={handleNextUser} handlePreviousUser={handlePreviousUser} id={currentUser.id} />
+					</div>
+					{/* Mostrar solo en desktop */}
+					<div className='sticky bottom-3 bg-white hidden md:block'>
+						<MatchButtons handleNextUser={handleNextUser} handlePreviousUser={handlePreviousUser} id={currentUser.id} />
+					</div>
 				</div>
-			</div>
-			<div className='flex justify-center gap-7 mt-4'>
-				<div className='bg-gray-300 rounded-lg w-24 h-32'></div>
-				<div className='bg-gray-300 rounded-lg w-24 h-32'></div>
-				<div className='bg-gray-300 rounded-lg w-24 h-32'></div>
-			</div>
-			<div className='bg-white border border-gray-400 rounded-xl p-4 mx-4 mt-4'>
-				<p className='font-bold'>Mis intereses</p>
-				<div className='mt-4'>
-					{interesesAbajo.map((interes, index) => (
-						<Tag key={index} text={interes} />
-					))}
-				</div>
-			</div>
-			{/* Mostrar solo en dispositivos móviles */}
-			<div className='mt-1 flex flex-col items-center justify-center sticky bottom-20 bg-white md:hidden'>
-				<MatchButtons />
-			</div>
-			{/* Mostrar solo en desktop */}
-			<div className='sticky bottom-3 bg-white hidden md:block'>
-				<MatchButtons />
-			</div>
+			)}
 		</>
-	)
-}
+	);
+};
 
-export default PerfilSwipe
+export default PerfilSwipe;

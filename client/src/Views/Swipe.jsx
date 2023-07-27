@@ -1,26 +1,49 @@
-import React from 'react'
-import { useMediaQuery } from 'react-responsive'
+import React, { useState } from 'react'
 import MenuTop from '../Components/MenuTop/MenuTop'
 import PerfilSwipe from '../Components/PerfilSwipe/PerfilSwipe'
 import MenuBtm from '../Components/MenuBtm/MenuBtm'
-import TinderCard from 'react-tinder-card'
+//import axios from "axios"
 
 const Swipe = () => {
-  const isMobile = useMediaQuery({ maxWidth: 767 })
+  /*const [user, setUser] = useState([]);
+
+  const getUsers = async () => {
+    const api = "https://buddyup.azurewebsites.net/buddyup-curated";
+    const headerConfig = {
+      headers: {
+        "Authorization": "Bearer " + JSON.parse((sessionStorage.getItem("token"))),
+        "Content-Type": "application/json",
+      }
+    }
+    try {
+      const { data } = await axios.get(api, headerConfig);
+      console.log(data);
+      setUser(data)
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+
+      <div className='flex'>
+        {
+          user.map(user => (
+
+
+         ))
+        }
+      </div>
+
+
+      id={user.id}
+  getUsers();*/
 
   return (
     <>
       <MenuTop />
-      {isMobile ? (
-        <TinderCard
-          onSwipe={direction => console.log('Deslizado', direction)}
-          onCardLeftScreen={() => console.log('Tarjeta fuera de pantalla')}
-        >
-          <PerfilSwipe />
-        </TinderCard>
-      ) : (
-        <PerfilSwipe />
-      )}
+
+            <PerfilSwipe  />
+ 
       <div className='pt-3 flex flex-col items-center justify-center sticky bottom-0 bg-white'>
         <MenuBtm />
       </div>
