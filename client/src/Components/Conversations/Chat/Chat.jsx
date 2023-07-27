@@ -78,7 +78,10 @@ const Chat = () => {
       setMessage('');
     }
   };
-
+const SaveMessageInDB = async()=>{
+  const endpoint = "https://buddyup.azurewebsites.net/api/messages/add"
+  const config = { }
+}
   return (
     <div
     className='h-screen bg-white text-white flex items-center justify-center'
