@@ -52,7 +52,7 @@ const PerfilSwipe = () => {
 
   const currentUser = usersData[currentIndex];
 
-  return currentUser ? (
+  return (
     <div className='flex flex-col w-full'>
        <div
         className='bg-white border border-gray-400 rounded-xl p-4 m-4 relative'
@@ -116,7 +116,7 @@ const PerfilSwipe = () => {
         <MatchButtons handleNextUser={handleNextUser} handlePreviousUser={handlePreviousUser} id={currentUser.id} />
       </div>
     </div>
-  ) : null;
+  )
 };
 
 export default PerfilSwipe;
