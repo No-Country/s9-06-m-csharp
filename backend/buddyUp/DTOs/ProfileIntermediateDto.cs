@@ -9,6 +9,6 @@
         public string pbio { get; set; } = string.Empty;
         public int page { get; set; }
         public string pgender { get; set; } = string.Empty;
-        public double pdistance { get; set; }
+        //public double pdistance { get; set; }
     } 
 }

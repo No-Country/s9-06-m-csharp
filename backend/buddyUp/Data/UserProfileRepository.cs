@@ -79,6 +79,7 @@ namespace buddyUp.Data
             if (user is not null)
             {
                 user.tags = GetTagsOfUser(user.pid).ToList();
+                user.images = GetImagesOfUser(user.pid).ToList();
                 return user;
             }
             return null;
@@ -291,7 +292,7 @@ namespace buddyUp.Data
 
         public IEnumerable<ProfileIntermediateDto> GetSelectionOfProfiles(int id_perfil)
         {
-            var procedureName = "public.get_view_for_users";
+            var procedureName = "public.get_view_for_users_final";
             IEnumerable<ProfileIntermediateDto> table = new List<ProfileIntermediateDto>(); 
             Profile? profile = _context.Profile.Where(p => p.Id == id_perfil).FirstOrDefault();
             using (var connection = new NpgsqlConnection(_config["PostgreSql:ConnectionString"]))
@@ -302,8 +303,8 @@ namespace buddyUp.Data
                     {
                         age_minimum = profile.minimun_age == 0 ? 18 : profile.minimun_age,
                         age_maximum = profile.maximun_age == 0 ? 99 : profile.maximun_age,
-                        distance_minimum = profile.minimun_distance == 0 ? 1 : profile.minimun_distance * 1000,
-                        distance_maximum = profile.maximun_distance == 0 ? 50000000 : profile.maximun_distance * 1000,
+                        //distance_minimum = profile.minimun_distance == 0 ? 1 : profile.minimun_distance * 1000,
+                        //distance_maximum = profile.maximun_distance == 0 ? 50000000 : profile.maximun_distance * 1000,
                         current_profile = profile.Id
                     },
                     commandType: CommandType.StoredProcedure); ;
@@ -313,7 +314,7 @@ namespace buddyUp.Data
         }
         public IEnumerable<ProfileIntermediateDto> GetOnePosibleFriend(int id_perfil)
         {
-            var procedureName = "public.get_one_posible_friend";
+            var procedureName = "public.get_one_posible_friend_final";
             IEnumerable<ProfileIntermediateDto> table = new List<ProfileIntermediateDto>();
             Profile? profile = _context.Profile.Where(p => p.Id == id_perfil).FirstOrDefault();
             using (var connection = new NpgsqlConnection(_config["PostgreSql:ConnectionString"]))
@@ -324,8 +325,8 @@ namespace buddyUp.Data
                     {
                         age_minimum = profile.minimun_age == 0 ? 18 : profile.minimun_age,
                         age_maximum = profile.maximun_age == 0 ? 99 : profile.maximun_age,
-                        distance_minimum = profile.minimun_distance == 0 ? 1 : profile.minimun_distance * 1000,
-                        distance_maximum = profile.maximun_distance == 0 ? 50000000 : profile.maximun_distance * 1000,
+                        //distance_minimum = profile.minimun_distance == 0 ? 1 : profile.minimun_distance * 1000,
+                        //distance_maximum = profile.maximun_distance == 0 ? 50000000 : profile.maximun_distance * 1000,
                         current_profile = profile.Id
                     },
                     commandType: CommandType.StoredProcedure); ;

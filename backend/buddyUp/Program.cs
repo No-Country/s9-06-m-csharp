@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Text;
+using static System.Net.WebRequestMethods;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -104,7 +105,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseCors(options => options
-.WithOrigins(new[] {"http://localhost:3000", "http://localhost:5173", "http://127.0.0.1:5173", "https://buddyup-1860f.web.app/" } )
+.WithOrigins(new[] {"http://localhost:3000", "http://localhost:5173", 
+    "http://127.0.0.1:5173", "https://buddyup-1860f.web.app", "https://bdupbck.vercel.app", 
+    "https://buddyup-1860f.firebaseapp.com", "https://buddyup-three.vercel.app" } )
 .AllowAnyHeader()
 .AllowAnyMethod()
 .AllowCredentials());

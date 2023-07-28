@@ -102,8 +102,8 @@ namespace buddyUp.Controllers
                     gender = intermediateP.pgender,
                     name = intermediateP.pname,
                     tags = GetTagsOfProfile(intermediateP.pid),
-                    photos = _repository.GetImagesOfUser(intermediateP.pid).ToList(),
-                    distance_in_km = (int) (intermediateP.pdistance / 1000 == 0 ? 1 : intermediateP.pdistance / 1000)
+                    photos = _repository.GetImagesOfUser(intermediateP.pid).ToList()
+                    //distance_in_km = (int) (intermediateP.pdistance / 1000 == 0 ? 1 : intermediateP.pdistance / 1000)
                 };
                 profile_view.Add(new_p_view);
             }

@@ -15,12 +15,17 @@ namespace buddyUp.Controllers
         private readonly ILogger<MatchController> _logger;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly ApplicationDbContext _context;
-        public MatchController(IMatchRepository rep, ILogger<MatchController> logger, UserManager<IdentityUser> userManager, ApplicationDbContext context)
+        private readonly IUserProfileRepository _repProfile;
+
+        public MatchController(IMatchRepository rep, ILogger<MatchController> logger, 
+            UserManager<IdentityUser> userManager, ApplicationDbContext context,
+            IUserProfileRepository repProfile)
         {
             _rep = rep;
             _logger = logger;
             _userManager = userManager;
             _context = context;
+            _repProfile = repProfile;
         }
 
         [HttpPost]
@@ -51,6 +56,44 @@ namespace buddyUp.Controllers
                     Message = "There was an error trying to get the user",
                     Status = "Not Ok"
                 });
+            }
+        }
+        [HttpPost]
+        [Route("like-with")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        public async Task<IActionResult> LikeWith(LikeWithDto dto)
+        {
+            var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
+            if(userId is not null)
+            {
+                var pid = _repProfile.GetProfileById(userId)!.Id;
+
+                if (_rep.LikeOrMutualLike(pid, dto.userToLike) == 2)
+                {
+                    return Ok(new Response
+                    {
+                        Message = "The secret like was added",
+                        Status = "OK"
+                    });
+                }
+                else if (_rep.LikeOrMutualLike(pid, dto.userToLike) == 1)
+                {
+                    return Ok(new Response
+                    {
+                        Message = "It's a Match ❤️",
+                        Status = "Nice"
+                    });
+                }
+                return BadRequest(new Response
+                {
+                    Message = "There was an error trying to get the user",
+                    Status = "Not Ok"
+                });
+            }
+            
+            else
+            {
+                return Unauthorized();
             }
         }
 
